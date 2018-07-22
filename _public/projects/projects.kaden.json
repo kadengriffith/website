@@ -1,0 +1,33 @@
+{
+  "projects": [{
+    "name": "Color Viewer",
+    "date": "7/2018"
+  }, {
+    "name": "Fractal Pattern Generation",
+    "date": "10/2017"
+  }, {
+    "href": "https://brokenheartstables.com/",
+    "name": "Broken Heart Stables",
+    "date": "8/2016"
+  }, {
+    "name": "Automated Pong",
+    "date": "9/2017"
+  }, {
+    "name": "Simple Math Game",
+    "date": "5/2016"
+  }, {
+    "name": "Guess The Number",
+    "date": "4/2016"
+  }, {
+    "name": "Snake",
+    "date": "10/2017"
+  }, {
+    "href": "https://github.com/mt3443/eecs448-project1",
+    "name": "Scheduling Web App",
+    "date": "09/2017"
+  }, {
+    "href": "https://github.com/kadengriffith/eecs448-project3/tree/master",
+    "name": "Air Hockey",
+    "date": "12/2017"
+  }]
+}
