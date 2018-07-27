@@ -1,10 +1,11 @@
 // Author: Kaden Griffith
 // Descr : Rendering HTML and JS client-side source
 
-const $ = require('kbrew_hypertxt')().get,
-  $qA = require('kbrew_hypertxt')().queryAll,
+const $ = require('kbrew_hypertxt').get,
+  $qA = require('kbrew_hypertxt').queryAll,
+  anime = require('animejs'),
   __internalClock = {
-    fps: 30,
+    fps: 10,
     fpsInterval: null,
     startTime: null,
     now: null,
@@ -12,9 +13,9 @@ const $ = require('kbrew_hypertxt')().get,
     elapsed: null,
     frameCount: 0,
     currentFPS: 0,
-    stop: false
-  },
-  anime = require('animejs');
+    stop: false,
+    animatedObjs: 0
+  };
 
 require('intersection-observer');
 require('./$assets/fonts/raleway.css');
@@ -22,7 +23,6 @@ require('./$assets/favicons/favicons');
 require('./css/Components.css');
 require('./css/app.css');
 
-// Register the service worker wherever it's supported
 if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js', {
     scope: './'
@@ -34,11 +34,12 @@ window.$$ = {
   deviceWidth: window.screen.width,
   deviceHeight: window.screen.height,
   deviceOrientation: null,
-  installPrompt: null,
-  fullscreen: null,
+  io: null,
   intersectionObserverFreq: 40,
-  app_debug: false,
-  preventScrolling: false
+  messages: [],
+  isError: () => {
+    return $$.messages.length === 0 ? false : true;
+  }
 };
 
 function __requestFrame() {
@@ -54,7 +55,6 @@ function __requestFrame() {
   }
 }
 
-// Screen Update at specified framerate
 function __update(fps = __internalClock.fps) {
   __internalClock.fpsInterval = 1000 / fps;
   __internalClock.then = Date.now();
@@ -63,10 +63,15 @@ function __update(fps = __internalClock.fps) {
 }
 
 function __draw() {
+  if($('#messages').innerHTML === '' && $$.messages[0]) {
+    $('#messages').innerHTML = $$.messages[0].msg;
+    $('#messages').style.display = 'block';
+    $$.messageTimeout = setTimeout(() => {
+      if($('#messages').style.display === 'block') clearMessage();
+    }, 3000);
+  }
   verifyOrientation();
-  $$.fullscreen = isFullscreen();
-
-  // This is the statusbar fix using 30 fps update
+  if($$.fullscreen !== isFullscreen()) $$.fullscreen = isFullscreen();
   if(isStandalone() && $$.fullscreen) {
     if($$.deviceOrientation === 'portrait') {
       $('.head-spacer').style.height = '90px';
@@ -75,33 +80,25 @@ function __draw() {
       $('.head-spacer').style.height = '50px';
       $('.nav').style.top = '-160px';
     }
-    $('#popover').style.top = '14%';
-  }
-
-  if($$.app_debug) {
-    $.clear($('.footer-link-area'));
-    $.add($('.footer-link-area'), `<div>fps: ${__internalClock.currentFPS}</div>`);
-    for(let prop in $$) {
-      $.add($('.footer-link-area'), `<div>${prop}: ${$$[prop]}</div>`);
-    }
-    $.add($('.footer-link-area'), `<div>windowWidth: ${window.innerWidth}</div><div>windowHeight: ${window.innerHeight}</div>`);
   }
 }
 
 window.toggleMenu = state => {
   if(state) {
+    $('.menu').style.display = 'block';
     anime({
       targets: '.menu',
       translateY: isStandalone() && $$.fullscreen ? 40 : 0,
       easing: 'easeOutSine',
       duration: 400,
       run: anim => {
-        $('.menu').style.display = 'block';
-        $('.nav').style.display = 'none';
-        $('.wrapper').style.display = 'none';
+        if(anim.progress === 50) {
+          $('.nav').style.display = 'none';
+          $('.wrapper').style.display = 'none';
+        }
       },
       complete: anim => {
-        setTimeout(() => $('.menuCue-off').style.display = 'block', 200);
+        $('.menuCue-off').style.display = 'block';
       }
     });
   } else {
@@ -110,8 +107,8 @@ window.toggleMenu = state => {
     anime({
       targets: '.menu',
       translateY: -1 * $$.deviceHeight,
-      duration: 300,
-      easing: 'easeInOutSine',
+      duration: 200,
+      easing: 'easeInSine',
       complete: anim => {
         $('.menuCue-off').style.display = 'none';
         $('.menu').style.display = 'none';
@@ -130,25 +127,70 @@ window.toggleLoading = (state, delay = 40) => {
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Lazy load images with classname .lazy-background
-  let io = new IntersectionObserver((entries, observer) => {
+window.displayMessage = msg => {
+  $$.messages.push({
+    msg
+  });
+}
+
+window.clearMessage = () => {
+  $$.messages.shift();
+  $('#messages').innerHTML = '';
+  $('#messages').style.display = 'none';
+};
+
+window.runLazyLoadingStartup = () => {
+  $$.io = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if(entry.isIntersecting) {
+        if(/anim-left/.test(entry.target.classList.value)) {
+          anime({
+            targets: entry.target,
+            duration: 1000,
+            easing: 'easeOutSine',
+            opacity: 0,
+            direction: 'reverse',
+            translateX: -1100
+          });
+        } else if(/anim-right/.test(entry.target.classList.value)) {
+          anime({
+            targets: entry.target,
+            duration: 1000,
+            easing: 'easeOutSine',
+            opacity: 0,
+            direction: 'reverse',
+            translateX: 1100
+          });
+        } else if(/anim-to-bottom/.test(entry.target.classList.value)) {
+          anime({
+            targets: entry.target,
+            duration: 700,
+            easing: 'easeInOutBack',
+            elasticity: 100,
+            opacity: 0,
+            direction: 'reverse',
+            translateY: -800
+          });
+        }
         entry.target.classList.add('visible');
-        io.unobserve(entry.target);
+        $$.io.unobserve(entry.target);
       }
     });
   });
 
-  io.POLL_INTERVAL = $$.intersectionObserverFreq;
+  $$.io.POLL_INTERVAL = $$.intersectionObserverFreq;
 
-  $qA('.lazy-background').forEach(lazyBackground => {
-    io.observe(lazyBackground);
+  $qA('.lazy').forEach(lazyBackground => {
+    if(!/visible/.test(lazyBackground.classList)) {
+      $$.animatedObjs++;
+      $$.io.observe(lazyBackground);
+    }
   });
+};
 
+document.addEventListener('DOMContentLoaded', () => {
+  runLazyLoadingStartup();
   __update();
-
   toggleMenu(false);
   toggleLoading(false, 200);
 

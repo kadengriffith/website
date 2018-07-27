@@ -7,7 +7,7 @@
   // Dependencies
   const fs = require('fs'),
     path = require('path'),
-    $ = require('kbrew_hypertxt')(),
+    $ = require('kbrew_hypertxt'),
     _acc = [],
     _url = $.jsonParseGrab(require('../../package'), 'kbrew-assets-url');
 
