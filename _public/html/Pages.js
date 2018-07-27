@@ -98,7 +98,7 @@
                     contains: $.icon({
                       icon: 'life-ring'
                     }) + 'Secure'
-                  }) + '- Ensure that your data is protected with the most advanced encryption available.'
+                  }) + '- Ensure that data you rely on is protected.'
                 }) + $.getElement({
                   class: 'tile-text-li',
                   contains: $.getElement({
@@ -106,7 +106,7 @@
                     contains: $.icon({
                       icon: 'fingerprint'
                     }) + 'Custom'
-                  }) + '- Best of all. We use custom styling and components to encapsulate the design ideas you have for your business.'
+                  }) + '- Best of all. We use unique styling and components to encapsulate the design ideas you have for your business.'
                 })
               })
             })
@@ -121,7 +121,7 @@
                 }) + 'Fast'
               }) + $.getElement({
                 class: 'tile-text',
-                contains: `We take advantage of the latest language capabilities and work with the highest grade optimizers to deliver the fastest speed the web can offer.`
+                contains: `We take advantage of the latest language capabilities and work with the highest grade of optimization to deliver the fastest speeds the web can offer.`
               }) + $.dln() + $.getElement({
                 class: 'tile-text',
                 contains: `Any idea you can think of can come to life and outperform most of the leading names in web software.`
@@ -138,10 +138,10 @@
                 }) + 'Reliable'
               }) + $.getElement({
                 class: 'tile-text',
-                contains: `Eliminate frustating workflows or layouts and let designers who know their way around user interfaces make your life easier.`
+                contains: `Eliminate frustating layouts and let designers who know their way around user interfaces and intense workflows make your life easier in every context.`
               }) + $.dln() + $.getElement({
                 class: 'tile-text',
-                contains: `We make software that works for you, and delivers a message that always puts your business in the spotlight.`
+                contains: `We make software that works for you, and delivers a message that always puts your business in the spotlight. Byte Wave software is never out-of-date or incompatible for its users.`
               })
             })
           }) + $.getElement({
@@ -155,13 +155,10 @@
                 }) + 'Secure'
               }) + $.getElement({
                 class: 'tile-text',
-                contains: `Use the latest security and encryption by default.`
+                contains: `We use the latest security and encryption by default.`
               }) + $.dln() + $.getElement({
                 class: 'tile-text',
-                contains: `Rest easy knowing that your customer's data is always out of reach from the public. We authorize online payments only through highly vetted third-parties and we never rely on unstable code.`
-              }) + $.dln() + $.getElement({
-                class: 'tile-text',
-                contains: `Bytewave-made software is never out-of-date or incompatible.`
+                contains: `Rest easy knowing that your customer's data is always out of reach from the public. We only work through highly vetted third-parties and we never rely on unstable code.`
               })
             })
           }) + $.getElement({
@@ -175,7 +172,7 @@
                 }) + 'Custom'
               }) + $.getElement({
                 class: 'tile-text',
-                contains: `The engineers at Bytewave build apps from the ground up.`
+                contains: `The engineers at Byte Wave build apps from the ground up.`
               }) + $.dln() + $.getElement({
                 class: 'tile-text',
                 contains: `No templates. Always custom code. Made just for you.`
