@@ -3,19 +3,15 @@
 
 const $ = require('kbrew_hypertxt'),
   Pages = require('./html/Pages'),
-  anime = require('animejs'),
   firebase = require('firebase/app');
 
-require('https://use.fontawesome.com/releases/v5.1.0/css/all.css');
-require('https://www.paypalobjects.com/api/checkout.js');
 require('firebase/database');
 require('firebase/auth');
 
 module.exports = {
   load: () => {
-    $.get('#messages').addEventListener('click', () => {
-      clearTimeout($$.messageTimeout);
-      clearMessage();
+    import( /* webpackChunkName: "animate" */ './animation').then(animations => {
+      animations.run();
     });
 
     firebase.initializeApp({
@@ -29,196 +25,34 @@ module.exports = {
 
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
-        toggleSignIn(false);
-        toggleViewAccount(true);
-      } else {
-        toggleSignIn(true);
-        toggleViewAccount(false);
+        toggleSignedIn(true);
       }
     });
 
-    function animateStartup() {
-      anime({
-        targets: '.background',
-        points: [{
-            value: '1920,1080 1596.1,1080 0,1080 0,0 464,133 960,691'
-          },
-          {
-            value: '1655,1080 757,1080 0,1080 0,683 395,883 973,856'
-          },
-          {
-            value: '1655,1130 727,1154 0,1080 0,946 346,1064 861,1130'
-          },
-          {
-            value: '1655,1130 727,1154 -43,1094 -13,1135 340,1201 861,1130'
+    function toggleSignedIn(state) {
+      firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value').then(user => {
+        firebase.database().ref(`users/${user.key}`).update({
+          times_visited: user.val().times_visited ? user.val().times_visited + 1 : 1
+        }).then(() => {
+          for(let el of $.queryAll('.signedinstate')) {
+            $.clear(el);
+            if(user.val().administrator) {
+              $.add(el, Pages.navMenuLink({
+                preset: 'admin'
+              }));
+            } else if(state) {
+              $.add(el, Pages.navMenuLink({
+                preset: 'profile'
+              }));
+            } else {
+              $.add(el, Pages.navMenuLink({
+                preset: 'signin'
+              }));
+            }
           }
-        ],
-        easing: 'easeInOutBack',
-        duration: 1500,
-        loop: false
-      });
-
-      anime({
-        targets: '.hero-logo',
-        easing: 'easeInOutBack',
-        translateX: -1 * window.innerWidth * 2,
-        elasticity: 200,
-        opacity: 0,
-        duration: 1200,
-        direction: 'reverse',
-        delay: 200,
-        rotate: '4turn',
-        complete: amin => {
-          anime({
-            targets: '.hero-text',
-            duration: 600,
-            opacity: 1,
-            easing: 'easeInOutBack',
-          });
-
-          anime({
-            targets: '.hero-button',
-            duration: 900,
-            opacity: 1,
-            easing: 'easeInOutBack',
-          });
-
-          spinLogo();
-        }
-      });
-    }
-
-    animateStartup();
-
-    function spinLogo() {
-      anime({
-        targets: '.hero-logo',
-        rotate: '4turn',
-        delay: 5000,
-        duration: 5000,
-        loop: true,
-        easing: 'easeInOutBack',
-        direction: 'alternate',
-        run: anim => {
-          runAnimations(anim);
-        }
-      });
-    }
-
-    function runAnimations(a) {
-      function typeWord() {
-        if(!$.get('.hero-text')) return;
-        let words = ['Ride', 'Catch', 'See', 'Feel', 'Become', 'Join', 'Share'],
-          index = Math.floor(Math.random() * words.length),
-          r = $.get('.hero-text').innerHTML;
-
-        if(new RegExp(words[index]).test(r)) {
-          if(index === 0) {
-            index++;
-          } else {
-            index--;
-          }
-        }
-
-        let a = Array.from(words[index]),
-          i = a.length - 1;
-
-        $.get('.hero-text').innerHTML = r.replace(/(Ride|Catch|See|Feel|Become|Join|Share)/, '');;
-
-        function Loop() {
-          setTimeout(() => {
-            $.get('.hero-text').innerHTML = `${a[i]}${$.get('.hero-text').innerHTML}`;
-            i--;
-            if(i >= 0) Loop();
-          }, 100)
-        }
-
-        Loop();
-      }
-
-      function Loop(what) {
-        setTimeout(() => {
-          $.get('.hero-text').innerHTML = `${a[i]}${$.get('.hero-text').innerHTML}`;
-          i--;
-          if(i >= 0) Loop();
-        }, 100)
-      }
-
-      function moveWhales() {
-        if(!$.queryAll('.whale')[0]) return;
-        anime({
-          targets: $.queryAll('.whale')[0],
-          rotate: '2turn',
-          easing: 'easeInSine',
-          elasticity: 6000,
-          duration: 4000
+        }).catch(err => {
+          displayMessage(`e:Error: ${err.message}`);
         });
-
-        anime({
-          targets: $.queryAll('.whale')[1],
-          rotate: '2turn',
-          easing: 'easeInSine',
-          delay: 75,
-          elasticity: 6000,
-          duration: 4000
-        });
-
-        anime({
-          targets: $.queryAll('.whale')[2],
-          rotate: '2turn',
-          easing: 'easeInSine',
-          delay: 150,
-          elasticity: 6000,
-          duration: 4000
-        });
-      }
-
-      if(a.progress === 100) {
-        moveWhales();
-        typeWord();
-      }
-    }
-
-    window.showPage = whichPage => {
-      function end() {
-        runLazyLoadingStartup();
-        toggleLoading(false);
-      }
-
-      toggleMenu(false);
-      toggleLoading(true);
-      $.clear($.get('#root'));
-      if(/learn/.test(whichPage)) {
-        $.get('#title').innerHTML = 'Byte Wave  |  Learn';
-        $.add($.get('#root'), Pages.index());
-        animateStartup();
-        end();
-      } else if(/signin/.test(whichPage)) {
-        $.get('#title').innerHTML = 'Byte Wave  |  Sign In';
-        $.add($.get('#root'), Pages.signin());
-        end();
-      } else if(/register/.test(whichPage)) {
-        $.get('#title').innerHTML = 'Byte Wave  |  Register';
-        $.add($.get('#root'), Pages.register());
-        end();
-      } else if(/profile/.test(whichPage)) {
-        firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value').then(user => {
-          $.get('#title').innerHTML = `Byte Wave  |  ${user.val().first_name}'s Account`;
-          $.add($.get('#root'), Pages.account(user.val()));
-          end();
-        });
-      }
-    };
-
-    function toggleSignIn(state) {
-      $.queryAll('.sign-in').forEach(link => {
-        link.style.display = state ? 'block' : 'none';
-      });
-    }
-
-    function toggleViewAccount(state) {
-      $.queryAll('.profile').forEach(link => {
-        link.style.display = state ? 'block' : 'none';
       });
     }
 
@@ -232,7 +66,7 @@ module.exports = {
       }).catch(err => {
         if(err) {
           toggleLoading(false);
-          displayMessage(`Error: ${err.message}`);
+          displayMessage(`e:Error: ${err.message}`);
         }
       });
     };
@@ -243,101 +77,179 @@ module.exports = {
       });
     };
 
-    window.register = () => {
-      let user = {
-          Account_Code: $.get('#accountCode').value,
-          First_Name: $.get('#first').value,
-          Last_Name: $.get('#last').value,
-          Email: $.get('#email').value,
-          Password: $.get('#password').value,
-          Repeat_Password: $.get('#password-c').value
-        },
-        errorMessage = 'Failed to register user.';
+    window.showPage = (whichPage, options) => {
+      toggleLoading(true);
 
-      function validatedEmail(email) {
-        let r = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return !r.test(String(email).toLowerCase());
+      function end() {
+        runLazyLoadingStartup();
+        toggleLoading(false);
       }
 
-      function validatedData() {
-        for(let prop in user) {
-          if(!user[prop].length > 0) return displayMessage(errorMessage + `<br>Reason:<br>${prop.replace('_', ' ')} is empty.`);
-        }
-        if(validatedEmail(user.Email)) {
-          displayMessage(errorMessage + `<br>Reason:<br>Email is not valid.`);
-        } else if(user.Password !== user.Repeat_Password) {
-          displayMessage(errorMessage + `<br>Reason:<br>Passwords do not match.`);
-        } else if(!user.Password.length >= 8) {
-          displayMessage(errorMessage + `<br>Reason:<br>Password is too short.`);
-        } else if(!/[a-z]/.test(user.Password)) {
-          displayMessage(errorMessage + `<br>Reason:<br>Password does not contain lower-case letter(s).`);
-        } else if(!/[A-Z]/.test(user.Password)) {
-          displayMessage(errorMessage + `<br>Reason:<br>Password does not contain upper-case letter(s).`);
-        }
-        return !$$.isError();
+      toggleMenu(false);
+
+      $.query('body').style.backgroundColor = '#f4f4f4';
+      $.clear($.get('#root'));
+
+      if(!navigator.onLine) {
+        displayMessage(`w:No network connection detected.<br>Please connect to the internet to access full functionality.`);
+        whichPage = 'learn';
       }
 
-      if(validatedData()) {
-        toggleLoading(true);
-        firebase.auth().createUserWithEmailAndPassword(user.Email, user.Password).then(() => {
-          delete user['Password'];
-          delete user['Repeat_Password'];
-          let d = {
-            account_id: firebase.auth().currentUser.uid
-          };
-          for(let prop in user) {
-            let p = prop.toLowerCase();
-            d[p] = user[prop];
+      if(/learn/.test(whichPage)) {
+        window.location.reload();
+      } else if(/signin/.test(whichPage)) {
+        $.get('#title').innerHTML = 'Byte Wave  |  Sign In';
+        $.query('body').style.backgroundColor = '#368ca3';
+        $.add($.get('#root'), Pages.signin());
+        end();
+      } else if(/register/.test(whichPage)) {
+        $.get('#title').innerHTML = 'Byte Wave  |  Register';
+        $.query('body').style.backgroundColor = '#368ca3';
+        $.add($.get('#root'), Pages.register());
+        end();
+      } else if(/profile/.test(whichPage)) {
+        firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value').then(user => {
+          if(user.val().administrator) {
+            $.get('#title').innerHTML = `Admin Panel`;
+            firebase.database().ref(`active_accounts`).once('value').then(accounts => {
+              $.add($.get('#root'), Pages.admin(firebase, accounts));
+              end();
+            }).catch(err => {
+              displayMessage(`e:Error: ${err.message}`);
+              end();
+            });
+          } else {
+            $.get('#title').innerHTML = `Welcome back, ${user.val().first_name}`;
+            $.add($.get('#root'), Pages.account(user.val()));
           }
-          firebase.database().ref('users/' + d.account_id).set(d);
-          showPage('profile');
+          end();
         }).catch(err => {
-          toggleLoading(false);
-          displayMessage(`We're currently unable to create your account.<br>Please try again later.<br>Error Code: ${err.code}`);
+          displayMessage(`e:Error: ${err.message}`);
+          end();
         });
+      } else if(/account_query/.test(whichPage)) {
+        firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value').then(admin => {
+          if(admin.val().administrator) {
+            firebase.database().ref(`users`).once('value').then(users => {
+              let _user;
+              users.forEach(user => {
+                if(user.val().account_code === options) {
+                  _user = user.val();
+                }
+              });
+              if(_user) {
+                $.get('#title').innerHTML = `${_user.first_name}'s Account`;
+                $.add($.get('#root'), Pages.account(_user, true));
+              } else {
+                firebase.database().ref(`active_accounts`).once('value').then(accounts => {
+                  $.get('#title').innerHTML = `Admin Panel`;
+                  $.add($.get('#root'), Pages.admin(firebase, accounts));
+                  displayMessage(`w:User not found.`);
+                  end();
+                }).catch(err => {
+                  displayMessage(`e:Error: ${err.message}`);
+                  end();
+                });
+              }
+              end();
+            }).catch(err => {
+              displayMessage(`e:Error: ${err.message}`);
+              end();
+            });
+          } else {
+            displayMessage(`e:Error: Access denied.`);
+            end();
+          }
+        }).catch(err => {
+          displayMessage(`e:Error: ${err.message}`);
+          end();
+        });
+      } else if(/pay/.test(whichPage)) {
+        $.query('body').style.backgroundColor = '#368ca3';
+        firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value').then(user => {
+          $.get('#title').innerHTML = `Byte Wave  |  Subscribe`;
+          let name_to_search = options.parentNode.childNodes[Array.prototype.indexOf.call(options.parentNode.childNodes, options) - 1].innerHTML;
+          name_to_search = name_to_search.replace(/\|/g, '');
+          name_to_search = name_to_search.replace(/ /g, '');
+          let project = user.val().billing_plan[name_to_search];
+          // Request payment API
+          import( /* webpackChunkName: "paypal" */ './payment').then(paypal => {
+            $.add($.get('#root'), Pages.pay(user.val(), project));
+            paypal.render();
+          });
+          end();
+        });
+      } else if(/support/.test(whichPage)) {
+        $.get('#title').innerHTML = `Byte Wave  |  Support`;
+        $.query('body').style.backgroundColor = '#368ca3';
+        $.add($.get('#root'), Pages.support());
+        end();
+      } else if(/privacy-policy/.test(whichPage)) {
+        $.get('#title').innerHTML = `Privacy Policy | 2018`;
+        $.add($.get('#root'), Pages.privacyPolicy());
+        end();
       }
     };
 
-    window.__$ = () => {
-      return $.getElement({
-        id: 'paypal-container'
+    window.register = () => {
+      // Request registration API
+      import( /* webpackChunkName: "registration" */ './register').then(register => {
+        register.createUser(firebase);
       });
-      let amt = Number($.get('.amount-text').innerHTML);
-      paypal.Button.render({
-        env: 'production',
-        style: {
-          layout: 'vertical',
-          size: 'medium',
-          shape: 'rect',
-          color: 'silver'
-        },
-        funding: {
-          allowed: [paypal.FUNDING.CARD, paypal.FUNDING.CREDIT]
-        },
-        client: {
-          sandbox: `ASrkKYmRH3eD027wqYDAbaHwVwwKrFU3_M2kyLB2oeHcdyLgW7_s30YQaMQA7DniO9WghPsSrPegvXKu`,
-          production: `ARzt2LSntzEGwv_djVtWEeGNv8L7gOEb4fh1QzjdLZywIcDZ3HMUMLRPJW1CWuyHo5Ko5_qJDukJZBW1`
-        },
-        payment: (data, actions) => {
-          return actions.payment.create({
-            payment: {
-              transactions: [{
-                amount: {
-                  total: amt,
-                  currency: 'USD'
-                },
-                description: 'Coffee Money'
-              }]
-            }
+    };
+
+    window.activateAccount = () => {
+      let account_code = $.get('#accountCode').value;
+      firebase.database().ref(`active_accounts`).once('value').then(accounts => {
+        let verified = true;
+        accounts.forEach(account => {
+          if(account.val().account_code === account_code) {
+            return verified = false;
+          }
+        });
+        if(verified) {
+          firebase.database().ref(`active_accounts`).push().set({
+            account_code
+          }).then(() => {
+            showPage('profile');
+            displayMessage(`s:Account #${account_code} has been added to the active accounts.`);
+          }).catch(err => {
+            displayMessage(`e:Error: ${err.message}`);
           });
-        },
-        onAuthorize: (data, actions) => {
-          return actions.payment.execute().then(() => {
-            hidePopover();
-            displayPopover('Thank you for being awesome!');
-          });
+        } else {
+          displayMessage(`e:Error: Account has already been activated!`);
         }
-      }, '#paypal-container');
+      });
+    };
+
+    window.addSubscription = () => {
+      let project = {
+        name: $.get('#projectName').value.length > 0 ? $.get('#projectName').value : 'PWA',
+        account_code: $.get('#accountCode2').value,
+        yearly_cost: $.get('#subscriptionAmount').value,
+        subscribed: false,
+        date: new Date()
+      };
+
+      firebase.database().ref('users').once('value').then(users => {
+        let found;
+        users.forEach(user => {
+          if(user.val().account_code === project.account_code) {
+            found = user;
+          }
+        });
+        if(found) {
+          firebase.database().ref(`users/${found.key}/billing_plan/${project.name}`).set(project).then(() => {
+            displayMessage(`s:Subscription has been added.`);
+          }).catch(err => {
+            displayMessage(`e:Error: ${err.message}`);
+          });
+        } else {
+          displayMessage(`e:Error: No user found.`);
+        }
+      }).catch(err => {
+        displayMessage(`e:Error: ${err.message}`);
+      });
     };
 
     window.download = () => {

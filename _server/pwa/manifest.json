@@ -1,8 +1,8 @@
 {
   "background_color": "#aaaaaa",
-  "theme_color": "#444444",
-  "name": "Kaden Griffith",
-  "short_name": "KG 2018",
+  "theme_color": "#f4f4f4",
+  "name": "Byte Wave",
+  "short_name": "Byte Wave",
   "display": "standalone",
   "orientation": "portrait",
   "start_url": "/",

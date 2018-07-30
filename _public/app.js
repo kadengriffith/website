@@ -13,8 +13,7 @@ const $ = require('kbrew_hypertxt').get,
     elapsed: null,
     frameCount: 0,
     currentFPS: 0,
-    stop: false,
-    animatedObjs: 0
+    stop: false
   };
 
 require('intersection-observer');
@@ -35,7 +34,7 @@ window.$$ = {
   deviceHeight: window.screen.height,
   deviceOrientation: null,
   io: null,
-  intersectionObserverFreq: 40,
+  intersectionObserverFreq: 8,
   messages: [],
   isError: () => {
     return $$.messages.length === 0 ? false : true;
@@ -63,19 +62,13 @@ function __update(fps = __internalClock.fps) {
 }
 
 function __draw() {
-  if($('#messages').innerHTML === '' && $$.messages[0]) {
-    $('#messages').innerHTML = $$.messages[0].msg;
-    $('#messages').style.display = 'block';
-    $$.messageTimeout = setTimeout(() => {
-      if($('#messages').style.display === 'block') clearMessage();
-    }, 3000);
-  }
   verifyOrientation();
+  checkMessages();
   if($$.fullscreen !== isFullscreen()) $$.fullscreen = isFullscreen();
   if(isStandalone() && $$.fullscreen) {
     if($$.deviceOrientation === 'portrait') {
-      $('.head-spacer').style.height = '90px';
-      $('.nav').style.top = '-120px';
+      $('.head-spacer').style.height = '100px';
+      $('.nav').style.top = '-110px';
     } else {
       $('.head-spacer').style.height = '50px';
       $('.nav').style.top = '-160px';
@@ -85,14 +78,14 @@ function __draw() {
 
 window.toggleMenu = state => {
   if(state) {
-    $('.menu').style.display = 'block';
+    $('.menu').style.display = 'flex';
     anime({
       targets: '.menu',
+      duration: 700,
       translateY: isStandalone() && $$.fullscreen ? 40 : 0,
-      easing: 'easeOutSine',
-      duration: 400,
+      easing: 'easeInSine',
       run: anim => {
-        if(anim.progress === 50) {
+        if(anim.progress === 100) {
           $('.nav').style.display = 'none';
           $('.wrapper').style.display = 'none';
         }
@@ -107,7 +100,7 @@ window.toggleMenu = state => {
     anime({
       targets: '.menu',
       translateY: -1 * $$.deviceHeight,
-      duration: 200,
+      duration: 250,
       easing: 'easeInSine',
       complete: anim => {
         $('.menuCue-off').style.display = 'none';
@@ -117,7 +110,7 @@ window.toggleMenu = state => {
   }
 };
 
-window.toggleLoading = (state, delay = 40) => {
+window.toggleLoading = (state, delay = 250) => {
   if(state) {
     if($('.loading').style.display === 'none') {
       $('.loading').style.display = 'block';
@@ -127,49 +120,28 @@ window.toggleLoading = (state, delay = 40) => {
   }
 };
 
-window.displayMessage = msg => {
-  $$.messages.push({
-    msg
-  });
-}
-
-window.clearMessage = () => {
-  $$.messages.shift();
-  $('#messages').innerHTML = '';
-  $('#messages').style.display = 'none';
-};
-
 window.runLazyLoadingStartup = () => {
   $$.io = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if(entry.isIntersecting) {
-        if(/anim-left/.test(entry.target.classList.value)) {
+        if(/(anim-left|anim-right)/.test(entry.target.classList.value)) {
           anime({
             targets: entry.target,
+            easing: 'easeInSine',
             duration: 1000,
-            easing: 'easeOutSine',
             opacity: 0,
             direction: 'reverse',
-            translateX: -1100
+            translateX: /(anim-left)/.test(entry.target.classList.value) ? -900 : 900
           });
-        } else if(/anim-right/.test(entry.target.classList.value)) {
+        } else if(/anim-grow/.test(entry.target.classList.value)) {
           anime({
             targets: entry.target,
+            elasticity: 4000,
+            easing: 'easeInSine',
+            opacity: 0,
             duration: 1000,
-            easing: 'easeOutSine',
-            opacity: 0,
             direction: 'reverse',
-            translateX: 1100
-          });
-        } else if(/anim-to-bottom/.test(entry.target.classList.value)) {
-          anime({
-            targets: entry.target,
-            duration: 700,
-            easing: 'easeInOutBack',
-            elasticity: 100,
-            opacity: 0,
-            direction: 'reverse',
-            translateY: -800
+            scale: 0
           });
         }
         entry.target.classList.add('visible');
@@ -182,7 +154,6 @@ window.runLazyLoadingStartup = () => {
 
   $qA('.lazy').forEach(lazyBackground => {
     if(!/visible/.test(lazyBackground.classList)) {
-      $$.animatedObjs++;
       $$.io.observe(lazyBackground);
     }
   });
@@ -190,15 +161,54 @@ window.runLazyLoadingStartup = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   runLazyLoadingStartup();
+
   __update();
+
   toggleMenu(false);
-  toggleLoading(false, 200);
+  toggleLoading(false, 700);
+
+  if(!navigator.onLine) {
+    displayMessage(`w:No network connection detected.<br>Please connect to the internet to access full functionality.`);
+  }
 
   // Request functionality
-  import( /* webpackChunkName: "app-full" */ './app-full').then(fullApp => {
+  import( /* webpackChunkName: "app" */ './app-full').then(fullApp => {
+    require('https://use.fontawesome.com/releases/v5.1.0/css/all.css');
     fullApp.load();
   });
 });
+
+function checkMessages() {
+  let m = $$.messages[0] ? $$.messages[0].msg : false;
+  if($('#messages').innerHTML === '' && m) {
+    $('#messages').innerHTML = m.substring(2);
+    $('#messages').style.color = m.charAt(0) === 'e' ? '#f4f4f4' : '#263238';
+    $('#messages').style.backgroundColor = m.charAt(0) === 'e' ? '#ec644b' : '#26c281';
+    $('#messages').style.backgroundColor = m.charAt(0) === 'w' ? '#eccc68' : $('#messages').style.backgroundColor;
+    $('#messages').style.display = 'block';
+    $$.messageTimeout = setTimeout(() => {
+      if($('#messages').style.display === 'block') clearMessage();
+    }, 6000);
+  }
+}
+
+$('#messages').addEventListener('click', () => {
+  clearTimeout($$.messageTimeout);
+  clearMessage();
+});
+
+window.displayMessage = msg => {
+  // Messages prefixed e: are errors, s: success
+  $$.messages.push({
+    msg
+  });
+}
+
+window.clearMessage = () => {
+  $$.messages.shift();
+  $('#messages').innerHTML = '';
+  $('#messages').style.display = 'none';
+};
 
 function verifyOrientation() {
   $$.deviceOrientation = window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape';

@@ -21,15 +21,18 @@ ul
     top: -160px;
     left: 0;
 
-    overflow: hidden;
-
     width: 100%;
     height: 50px;
     padding-top: 160px;
 
     white-space: nowrap;
 
-    background-color: transparent;
+    background-color: #263238;
+}
+
+.nav .link
+{
+    color: #f4f4f4;
 }
 
 .nav-logo
@@ -46,7 +49,7 @@ ul
     background-repeat: no-repeat;
 }
 
-.nav ul
+.signedinstate
 {
     display: inline-block;
     float: right;
@@ -54,19 +57,13 @@ ul
     height: 50px;
     margin: 0;
     margin-top: .75em;
-    padding-right: 1em;
-
-    list-style: none;
+    margin-right: 1em;
 }
 
-.nav ul li
+.signedinstate .link
 {
     font-size: 20px;
-    font-weight: bold;
-
-    display: inline-block;
-
-    margin-right: 1em;
+    font-weight: light;
 
     text-decoration: none;
 }
@@ -77,7 +74,10 @@ ul
     z-index: 502;
 
     display: none;
+    display: flex;
     overflow-y: scroll;
+    align-items: center;
+    flex-direction: column;
 
     width: 100vw;
     height: 100vh;
@@ -89,30 +89,16 @@ ul
     background-color: #263238;
 }
 
-.menu ul
+
+.menu .signedinstate
 {
-    display: grid;
-    align-self: center;
-
-    width: 200px;
-    margin-top: 6em;
-    margin-right: auto;
-    margin-left: auto;
-
-    list-style: none;
-
-    grid-template-columns: 200px;
-    grid-auto-rows: 40px;
+    margin-top: 4em;
 }
 
-.menu ul li
+.menu .signedinstate .link
 {
-    font-size: 18px;
-    font-weight: bold;
-
-    display: block;
-
-    text-decoration: none;
+    height: 40px;
+    margin: 0;
 }
 
 .menu .sign-in,
@@ -126,8 +112,6 @@ ul
 a
 {
     display: inline-block;
-
-    margin-right: .5em;
 
     cursor: pointer;
     transition: .1s ease-in;
@@ -168,11 +152,6 @@ a:hover i,
     text-decoration-color: #71acbc;
 }
 
-.profile
-{
-    display: none;
-}
-
 .menuCue,
 .menuCue-off
 {
@@ -187,16 +166,17 @@ a:hover i,
 
     cursor: pointer;
 
-    color: #368ca3;
+    color: #f4f4f4;
 }
 
-.menuCue
+.menuCue-off
 {
-    color: #263238;
+    align-self: flex-end;
 }
 
-input,
-input:required
+.input,
+.input:required,
+.alt-input
 {
     font-size: 16px;
 
@@ -212,24 +192,36 @@ input:required
     background-position: 0 0;
 }
 
-input:focus,
-input:required:focus
+.alt-input
 {
     border-bottom: 2px solid #263238;
 }
 
-input:valid,
-input:required:valid
+.alt-input,
+.alt-input::placeholder
+{
+    color: #263238;
+}
+
+.input:focus,
+.input:required:focus,
+.alt-input:focus
+{
+    border-bottom: 2px solid #263238;
+}
+
+.input:valid,
+.input:required:valid,
+.alt-input:valid
 {
     transition: .1s ease-in-out;
 
     border-bottom: 2px solid #26c281;
 }
 
-input::placeholder,
-input:required::placeholder
+.input::placeholder,
+.input:required::placeholder
 {
-    opacity: 1;
     color: #f4f4f4;
 }
 
@@ -244,7 +236,6 @@ input:-ms-input-placeholder
 .footer
 {
     width: 100%;
-    margin-top: 2em;
     padding-bottom: 1.2em;
 
     color: #f4f4f4;
@@ -263,13 +254,23 @@ input:-ms-input-placeholder
     grid-template-columns: repeat(3, 1fr);
 }
 
-.footer-link-area ul
+.footer-link-area i
 {
     display: inline-block;
     align-self: center;
 
-    width: 150px;
-    padding: 10px;
+    padding: .5em;
+
+    justify-self: center;
+}
+
+.footer-link-area ul
+{
+    display: flex;
+    align-self: center;
+    flex-direction: column;
+
+    padding: .5em;
 
     justify-self: center;
 }
@@ -278,7 +279,7 @@ input:-ms-input-placeholder
 {
     display: inline-block;
 
-    padding: 10px;
+    padding: .5em;
 
     transition: .1s ease-in;
 }
@@ -295,6 +296,8 @@ input:-ms-input-placeholder
     align-self: center;
 
     cursor: pointer;
+
+    color: #f4f4f4;
 
     justify-self: center;
 }

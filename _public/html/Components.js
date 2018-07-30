@@ -34,7 +34,7 @@
           class: 'menuCue-off',
           icon: 'times',
           onclick: "toggleMenu(false);"
-        }) + this.links2() + $.dln()
+        }) + this.links() + $.dln()
       });
     }
 
@@ -46,52 +46,36 @@
 
     links() {
       return $.getElement({
-        tag: 'ul',
+        class: 'signedinstate',
         contains: $.getElement({
-          tag: 'li',
-          contains: $.getElement({
-            id: 'sign-in-nav',
-            class: 'link sign-in',
-            contains: 'Sign in',
-            onclick: "showPage('signin');"
-          })
-        }) + $.getElement({
-          tag: 'li',
-          contains: $.getElement({
-            class: 'link profile',
-            contains: 'View Account',
-            onclick: "showPage('profile');"
-          })
-        })
-      });
-    }
-
-    links2() {
-      return $.getElement({
-        tag: 'ul',
-        contains: $.getElement({
-          tag: 'li',
-          contains: $.getElement({
-            class: 'link sign-in',
-            contains: 'Sign in',
-            onclick: "showPage('signin');"
-          })
-        }) + $.getElement({
-          tag: 'li',
-          contains: $.getElement({
-            class: 'link profile',
-            contains: 'View Account',
-            onclick: "showPage('profile');"
-          })
+          class: 'link sign-in',
+          contains: 'Sign in',
+          onclick: "showPage('signin');"
         })
       });
     }
 
     footerLinks() {
-      return $.bIcon({
-        icon: 'twitter',
+      return $.getElement({
+        tag: 'a',
+        href: 'https://twitter.com/bytewave_apps',
+        target: 'new',
         class: 'link-larger',
-        onclick: "urlRequest('https://twitter.com/bytewave');"
+        alt: 'Byte Wave LLC Twitter',
+        contains: $.bIcon({
+          icon: 'twitter'
+        })
+      }) + $.getElement({
+        tag: 'ul',
+        class: 'link-footer-group',
+        contains: $.getElement({
+          tag: 'li',
+          contains: $.getElement({
+            class: 'link-footer',
+            contains: 'Privacy Policy',
+            onclick: "showPage('privacy-policy');"
+          })
+        })
       }) + $.getElement({
         tag: 'ul',
         class: 'link-footer-group',
@@ -101,31 +85,6 @@
             class: 'link-footer',
             contains: 'Support',
             onclick: "showPage('support');"
-          })
-        }) + $.getElement({
-          tag: 'li',
-          contains: $.getElement({
-            class: 'link-footer',
-            contains: 'Privacy Policy',
-            onclick: "showPage('pivacy-policy');"
-          })
-        })
-      }) + $.getElement({
-        tag: 'ul',
-        class: 'link-footer-group',
-        contains: $.getElement({
-          tag: 'li',
-          contains: $.getElement({
-            class: 'link-footer',
-            contains: 'Account Services',
-            onclick: "showPage('account-services');"
-          })
-        }) + $.getElement({
-          tag: 'li',
-          contains: $.getElement({
-            class: 'link-footer',
-            contains: 'Contact',
-            onclick: "showPage('contact');"
           })
         })
       });
