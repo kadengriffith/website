@@ -1,6 +1,6 @@
 {
   "name": "bytewave",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A progressive web app made by Kaden Griffith",
   "main": "app.js",
   "kbrew-assets-url": "_dist",
@@ -58,6 +58,7 @@
     "firebase": "^5.3.0",
     "hover.css": "^2.3.2",
     "intersection-observer": "^0.5.0",
-    "kbrew_hypertxt": "^1.0.3"
+    "kbrew_hypertxt": "^1.0.3",
+    "paypal-rest-sdk": "^1.8.1"
   }
 }

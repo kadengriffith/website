@@ -37,7 +37,7 @@
 
     const rightContext = RegExp.rightContext.toString(),
       leftContext = RegExp.leftContext.toString(),
-      final = `${leftContext}${C.menu()}${C.navbar()}${C.spacer()}${C.messeges()}<div id="root">${root}${rightContext}`;
+      final = `${leftContext}${C.menu()}${C.navbar()}${C.spacer()}${C.messeges()}<div id="root">${C.spacer()}${root}${rightContext}`;
 
     fs.unlinkSync(path.join(__dirname, _url));
     fs.writeFileSync(path.join(__dirname, _url), final);

@@ -34,7 +34,7 @@ window.$$ = {
   deviceHeight: window.screen.height,
   deviceOrientation: null,
   io: null,
-  intersectionObserverFreq: 8,
+  intersectionObserverFreq: 1,
   messages: [],
   isError: () => {
     return $$.messages.length === 0 ? false : true;
@@ -68,20 +68,25 @@ function __draw() {
   if(isStandalone() && $$.fullscreen) {
     if($$.deviceOrientation === 'portrait') {
       $('.head-spacer').style.height = '100px';
-      $('.nav').style.top = '-110px';
+      $('.nav').style.top = '-130px';
+      $('.head-spacer', 1).style.height = $('.main') ? '1px' : '0';
+      $('#messages').style.top = '80px'
+      $('.hero-content').style.top = '114px';
     } else {
+      $('#messages').style.top = '50px'
       $('.head-spacer').style.height = '50px';
       $('.nav').style.top = '-160px';
     }
   }
 }
 
+
 window.toggleMenu = state => {
   if(state) {
     $('.menu').style.display = 'flex';
     anime({
       targets: '.menu',
-      duration: 700,
+      duration: 250,
       translateY: isStandalone() && $$.fullscreen ? 40 : 0,
       easing: 'easeInSine',
       run: anim => {
@@ -100,7 +105,7 @@ window.toggleMenu = state => {
     anime({
       targets: '.menu',
       translateY: -1 * $$.deviceHeight,
-      duration: 250,
+      duration: 130,
       easing: 'easeInSine',
       complete: anim => {
         $('.menuCue-off').style.display = 'none';
@@ -131,17 +136,18 @@ window.runLazyLoadingStartup = () => {
             duration: 1000,
             opacity: 0,
             direction: 'reverse',
-            translateX: /(anim-left)/.test(entry.target.classList.value) ? -900 : 900
+            translateX: /(anim-left)/.test(entry.target.classList.value) ? -900 : 900,
+            blur: 0
           });
         } else if(/anim-grow/.test(entry.target.classList.value)) {
           anime({
             targets: entry.target,
             elasticity: 4000,
             easing: 'easeInSine',
-            opacity: 0,
+            opacity: 1,
             duration: 1000,
-            direction: 'reverse',
-            scale: 0
+            scale: 1,
+            blur: 0
           });
         }
         entry.target.classList.add('visible');
@@ -161,11 +167,13 @@ window.runLazyLoadingStartup = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   runLazyLoadingStartup();
-
   __update();
 
   toggleMenu(false);
-  toggleLoading(false, 700);
+  import( /* webpackChunkName: "animate" */ './animation').then(animations => {
+    animations.run();
+    toggleLoading(false, 350);
+  });
 
   if(!navigator.onLine) {
     displayMessage(`w:No network connection detected.<br>Please connect to the internet to access full functionality.`);
@@ -173,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Request functionality
   import( /* webpackChunkName: "app" */ './app-full').then(fullApp => {
-    require('https://use.fontawesome.com/releases/v5.1.0/css/all.css');
+    if(navigator.onLine) require('https://use.fontawesome.com/releases/v5.1.0/css/all.css');
     fullApp.load();
   });
 });

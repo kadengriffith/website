@@ -72,7 +72,7 @@
           tag: 'li',
           contains: $.getElement({
             class: 'link-footer',
-            contains: 'Privacy Policy',
+            contains: 'Privacy',
             onclick: "showPage('privacy-policy');"
           })
         })

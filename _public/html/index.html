@@ -67,8 +67,11 @@
     position: fixed;
     z-index: 505;
     width: 100vw;
-    height: 100vh;
-    top: 0; left: 0;
+    height: 200vh;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     background-color: #368ca3;
     z-index: 703;
   }
@@ -85,6 +88,13 @@
     border-top: 3px solid #f4f4f4;
     border-top-style: outset;
     border-radius: 50%;
+  }
+  @media screen and (max-width: 625px)
+  {
+    .loading-indicator {
+      width: 7vw !important;
+      height: 7vw !important;
+    }
   }
   @keyframes rotating
   {

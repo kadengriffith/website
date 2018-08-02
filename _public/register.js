@@ -10,6 +10,7 @@ module.exports = {
           Account_Code: $('#accountCode').value,
           First_Name: $('#first').value,
           Last_Name: $('#last').value,
+          Phone: $('#phone').value,
           Email: $('#email').value,
           Password: $('#password').value,
           Repeat_Password: $('#password-c').value
@@ -20,6 +21,9 @@ module.exports = {
         let r = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return !r.test(String(email).toLowerCase());
       }
+
+      let ph = user.Phone;
+      user['Phone'] = `(${ph.substring(0, 3)}) ${ph.substring(3, 6)}-${ph.substring(6, 10)}`;
 
       function validatedData() {
         for(let prop in user) {
@@ -69,13 +73,15 @@ module.exports = {
               firebase.database().ref(`active_accounts`).once('value').then(accounts => {
                 accounts.forEach(account => {
                   // Activating restricts others from setting an account.
-                  if(account.val().account_code === user.Account_Code) firebase.database().ref(`active_accounts/${account.key}`).update({
-                    activated: true
-                  });
+                  if(account.val().account_code === user.Account_Code) {
+                    return firebase.database().ref(`active_accounts/${account.key}`).update({
+                      activated: true
+                    });
+                  }
                 });
+                showPage('learn');
+                displayMessage(`s:Your account is ready!`);
               });
-              showPage('profile');
-              displayMessage(`s:Your account is ready!`);
             }).catch(err => {
               toggleLoading(false);
               displayMessage(`e:We're currently unable to create your account.<br>Please try again later.<br>Error: ${err.message}`);

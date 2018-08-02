@@ -32,18 +32,11 @@ module.exports = {
         translateX: -1 * window.innerWidth * 2,
         elasticity: 500,
         opacity: 0,
-        duration: 1200,
+        duration: 1000,
         direction: 'reverse',
-        delay: 200,
+        delay: 325,
         rotate: '4turn',
         complete: amin => {
-          anime({
-            targets: '.hero-text',
-            duration: 600,
-            opacity: 1,
-            easing: 'easeInSine',
-          });
-
           anime({
             targets: '.hero-button',
             duration: 900,
@@ -64,6 +57,14 @@ module.exports = {
             }
           });
         }
+      });
+
+      anime({
+        targets: '.hero-text',
+        duration: 1000,
+        delay: 400,
+        opacity: 1,
+        easing: 'easeInSine',
       });
     }
 
