@@ -2,7 +2,8 @@ const path = require('path'),
   CleanWebpackPlugin = require('clean-webpack-plugin'),
   ExtractTextPlugin = require('extract-text-webpack-plugin'),
   UglifyJSPlugin = require('uglifyjs-webpack-plugin'),
-  HtmlWebpackPlugin = require('html-webpack-plugin');
+  HtmlWebpackPlugin = require('html-webpack-plugin'),
+  MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: './_public/app.js',
@@ -24,7 +25,7 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
+        test: /\.s?css$/,
         use: [{
             loader: 'style-loader'
           },
@@ -34,12 +35,13 @@ module.exports = {
               importLoaders: 1
             }
           },
+          'sass-loader',
           {
             loader: 'postcss-loader',
             options: {
               sourceMap: 'inline'
             }
-          }
+          },
         ]
       },
       {

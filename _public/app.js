@@ -2,10 +2,12 @@
 // Descr : Rendering HTML and JS client-side source
 
 const $ = require('kbrew_hypertxt').get,
+  $q = require('kbrew_hypertxt').query,
   $qA = require('kbrew_hypertxt').queryAll,
+  u = require('./objects/Util'),
   anime = require('animejs'),
   __internalClock = {
-    fps: 10,
+    fps: 24,
     fpsInterval: null,
     startTime: null,
     now: null,
@@ -16,25 +18,22 @@ const $ = require('kbrew_hypertxt').get,
     stop: false
   };
 
+require('./css/app.scss');
 require('intersection-observer');
 require('./$assets/fonts/raleway.css');
 require('./$assets/favicons/favicons');
-require('./css/Components.css');
-require('./css/app.css');
+require('https://use.fontawesome.com/releases/v5.1.0/css/all.css');
 
 if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js', {
     scope: './'
-  }).catch(err => console.log('service-worker.js is not registered in this domain.'));
+  }).catch(err => console.warn('service-worker.js is not registered in this domain.'));
 }
 
 // Device Information
 window.$$ = {
-  deviceWidth: window.screen.width,
-  deviceHeight: window.screen.height,
-  deviceOrientation: null,
   io: null,
-  intersectionObserverFreq: 1,
+  intersectionObserverFreq: 20,
   messages: [],
   isError: () => {
     return $$.messages.length === 0 ? false : true;
@@ -62,58 +61,45 @@ function __update(fps = __internalClock.fps) {
 }
 
 function __draw() {
-  verifyOrientation();
   checkMessages();
-  if($$.fullscreen !== isFullscreen()) $$.fullscreen = isFullscreen();
-  if(isStandalone() && $$.fullscreen) {
-    if($$.deviceOrientation === 'portrait') {
-      $('.head-spacer').style.height = '100px';
-      $('.nav').style.top = '-130px';
-      $('.head-spacer', 1).style.height = $('.main') ? '1px' : '0';
-      $('#messages').style.top = '80px'
-      $('.hero-content').style.top = '114px';
-    } else {
-      $('#messages').style.top = '50px'
-      $('.head-spacer').style.height = '50px';
-      $('.nav').style.top = '-160px';
-    }
+  if(u.isStandalone() && u.isFullscreen() && u.verifyOrientation() === 'portrait') {
+    $('.nav').style.top = '-130px';
+    $('#root').style.top = '80px';
+    $('#messages').style.top = '80px';
+  } else if(u.isStandalone() && u.isFullscreen() && u.verifyOrientation() === 'landscape') {
+    $('.nav').style.top = '-160px';
+    $('#root').style.top = '0px';
+    $('#messages').style.top = '50px';
   }
 }
-
 
 window.toggleMenu = state => {
   if(state) {
     $('.menu').style.display = 'flex';
     anime({
       targets: '.menu',
-      duration: 250,
-      translateY: isStandalone() && $$.fullscreen ? 40 : 0,
-      easing: 'easeInSine',
-      run: anim => {
-        if(anim.progress === 100) {
-          $('.nav').style.display = 'none';
-          $('.wrapper').style.display = 'none';
-        }
-      },
-      complete: anim => {
-        $('.menuCue-off').style.display = 'block';
-      }
+      duration: 350,
+      translateY: u.isStandalone() && u.isFullscreen() && u.verifyOrientation() === 'portrait' ? 30 : 0,
+      easing: 'easeInSine'
     });
+    setTimeout(() => {
+      $('.wrapper').style.display = 'none';
+    }, 750);
   } else {
-    $('.nav').style.display = 'block';
     $('.wrapper').style.display = 'block';
     anime({
       targets: '.menu',
-      translateY: -1 * $$.deviceHeight,
-      duration: 130,
+      translateY: -1 * window.screen.height,
+      duration: 100,
       easing: 'easeInSine',
       complete: anim => {
-        $('.menuCue-off').style.display = 'none';
         $('.menu').style.display = 'none';
       }
     });
   }
 };
+
+toggleMenu(false);
 
 window.toggleLoading = (state, delay = 250) => {
   if(state) {
@@ -133,20 +119,27 @@ window.runLazyLoadingStartup = () => {
           anime({
             targets: entry.target,
             easing: 'easeInSine',
-            duration: 1000,
-            opacity: 0,
+            duration: 800,
             direction: 'reverse',
+            delay: 80,
+            blur: 0,
             translateX: /(anim-left)/.test(entry.target.classList.value) ? -900 : 900,
-            blur: 0
+            begin: () => {
+              anime({
+                targets: entry.target,
+                easing: 'easeInSine',
+                duration: 900,
+                opacity: 1
+              });
+            }
           });
         } else if(/anim-grow/.test(entry.target.classList.value)) {
           anime({
             targets: entry.target,
-            elasticity: 4000,
             easing: 'easeInSine',
-            opacity: 1,
             duration: 1000,
             scale: 1,
+            opacity: 1,
             blur: 0
           });
         }
@@ -167,12 +160,13 @@ window.runLazyLoadingStartup = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   runLazyLoadingStartup();
+
   __update();
 
-  toggleMenu(false);
   import( /* webpackChunkName: "animate" */ './animation').then(animations => {
     animations.run();
-    toggleLoading(false, 350);
+
+    toggleLoading(false, 425);
   });
 
   if(!navigator.onLine) {
@@ -181,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Request functionality
   import( /* webpackChunkName: "app" */ './app-full').then(fullApp => {
-    if(navigator.onLine) require('https://use.fontawesome.com/releases/v5.1.0/css/all.css');
     fullApp.load();
   });
 });
@@ -206,7 +199,7 @@ $('#messages').addEventListener('click', () => {
 });
 
 window.displayMessage = msg => {
-  // Messages prefixed e: are errors, s: success
+  // Messages prefixed e: are errors, s: success, w: warning
   $$.messages.push({
     msg
   });
@@ -217,23 +210,3 @@ window.clearMessage = () => {
   $('#messages').innerHTML = '';
   $('#messages').style.display = 'none';
 };
-
-function verifyOrientation() {
-  $$.deviceOrientation = window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape';
-}
-
-function isMobile() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent);
-}
-
-function isStandalone() {
-  return(window.matchMedia('(display-mode: standalone)').matches || 'standalone' in navigator);
-}
-
-function isFullscreen() {
-  if($$.deviceOrientation === 'portrait') {
-    return $$.deviceHeight == window.innerHeight && $$.deviceWidth == window.innerWidth;
-  } else if($$.deviceOrientation === 'landscape') {
-    return $$.deviceHeight == window.innerWidth && $$.deviceWidth == window.innerHeight;
-  }
-}

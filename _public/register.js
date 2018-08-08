@@ -15,20 +15,18 @@ module.exports = {
           Password: $('#password').value,
           Repeat_Password: $('#password-c').value
         },
-        errorMessage = 'Failed to register user.';
+        errorMessage = 'Error: Failed to register user.';
 
       function validatedEmail(email) {
         let r = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return !r.test(String(email).toLowerCase());
       }
 
-      let ph = user.Phone;
-      user['Phone'] = `(${ph.substring(0, 3)}) ${ph.substring(3, 6)}-${ph.substring(6, 10)}`;
-
       function validatedData() {
         for(let prop in user) {
           if(!user[prop].length > 0) return displayMessage(`e:${errorMessage}<br>Reason:<br>${prop.replace('_', ' ')} is empty.`);
         }
+
         if(validatedEmail(user.Email)) {
           displayMessage(`e:${errorMessage}<br>Reason:<br>Email is not valid.`);
         } else if(user.Password !== user.Repeat_Password) {
@@ -40,6 +38,13 @@ module.exports = {
         } else if(!/[A-Z]/.test(user.Password)) {
           displayMessage(`e:${errorMessage}<br>Reason:<br>Password does not contain upper-case letter(s).`);
         }
+
+        if(isNaN(user.Phone) || user.Phone.length < 10) {
+          displayMessage(`e:Error: Phone number provided is not a valid number.`);
+        }
+
+        let ph = user.Phone;
+        user['Phone'] = `(${ph.substring(0, 3)}) ${ph.substring(3, 6)}-${ph.substring(6, 10)}`;
 
         // Window device object Form validation
         return !$$.isError();

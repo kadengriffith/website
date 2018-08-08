@@ -65,20 +65,24 @@
   <style>
   .loading {
     position: fixed;
-    z-index: 505;
+    top: 0; left: 0; bottom: 0;
     width: 100vw;
-    height: 200vh;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    height: 110vh;
+    overflow: hidden;
     background-color: #368ca3;
     z-index: 703;
   }
+  @media screen and (max-width: 625px)
+  {
+    .loading-indicator {
+      width: 7vw !important;
+      height: 7vw !important;
+    }
+  }
   .loading-indicator {
-    width: 3vw;
-    height: 3vw;
-    margin: 40vh auto auto auto;
+    width: 4vw;
+    height: 4vw;
+    margin: 41vh auto;
     border-left: 3px solid #71acbc;
     border-left-style: inset;
     border-right: 3px dotted #71acbc;
@@ -88,13 +92,6 @@
     border-top: 3px solid #f4f4f4;
     border-top-style: outset;
     border-radius: 50%;
-  }
-  @media screen and (max-width: 625px)
-  {
-    .loading-indicator {
-      width: 7vw !important;
-      height: 7vw !important;
-    }
   }
   @keyframes rotating
   {

@@ -2,6 +2,7 @@
   "name": "bytewave",
   "version": "1.0.2",
   "description": "A progressive web app made by Kaden Griffith",
+  "repository": "https://github.com/kadengriffith/bytewave.git",
   "main": "app.js",
   "kbrew-assets-url": "_dist",
   "scripts": {
@@ -10,7 +11,7 @@
     "build": "echo Initiating Build... && npm run build-index && npm run build-app-projects && webpack -p --optimize-minimize && npm run replace-index-file && npm run replace-dev-build && npm run build-dist",
     "build-dist": "cp ./_server/pwa/manifest.json ./_dist/manifest.json && cp ./_server/pwa/service-worker.js ./_dist/service-worker.js && npm run build-list",
     "build-list": "node ./_server/_util/asset.rebuild.js",
-    "build-app-projects": "npm run backup-dev-build && node ./_server/_util/project.text-replace.js",
+    "build-app-projects": "npm run backup-dev-build",
     "build-index": "npm run backup-index-file && node ./_public/html/html.generate.js",
     "backup-dev-build": "cp ./_public/app-full.js ./_server/_util/_backups/_backup.app-full.js",
     "backup-index-file": "cp ./_public/html/index.html ./_server/_util/_backups/_backup.index.html",
@@ -37,6 +38,7 @@
     "html-loader": "^0.5.5",
     "html-minifier": "^3.5.18",
     "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.1",
     "path": "^0.12.7",
     "postcss": "^6.0.23",
     "postcss-browser-reporter": "^0.5.0",
@@ -45,6 +47,7 @@
     "postcss-preset-env": "^5.2.2",
     "postcss-reporter": "^5.0.0",
     "postcss-url": "^7.3.2",
+    "sass-loader": "^7.1.0",
     "style-loader": "^0.21.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^1.0.1",
@@ -56,9 +59,8 @@
   "dependencies": {
     "animejs": "^2.2.0",
     "firebase": "^5.3.0",
-    "hover.css": "^2.3.2",
     "intersection-observer": "^0.5.0",
-    "kbrew_hypertxt": "^1.0.3",
-    "paypal-rest-sdk": "^1.8.1"
+    "kbrew_hypertxt": "^1.0.4",
+    "node-sass": "^4.9.2"
   }
 }

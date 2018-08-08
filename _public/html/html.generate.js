@@ -7,8 +7,8 @@
   // Dependencies
   const fs = require('fs'),
     path = require('path'),
-    Pages = require('./Pages'),
-    C = require('./Components'),
+    Pages = require('../objects/Pages'),
+    C = require('../objects/Components'),
     _url = 'index.html';
 
   String.prototype.splice = (idx, rem, str) => {
@@ -33,11 +33,11 @@
     console.log(`A new index.html is being written...\n`);
     const root = Pages.index();
 
-    /<div id="root">/g.test(indexContent);
+    /<div id="root">/.test(indexContent);
 
     const rightContext = RegExp.rightContext.toString(),
       leftContext = RegExp.leftContext.toString(),
-      final = `${leftContext}${C.menu()}${C.navbar()}${C.spacer()}${C.messeges()}<div id="root">${C.spacer()}${root}${rightContext}`;
+      final = `${leftContext}${C.menu()}${C.navbar()}${C.messages()}<div id="root">${root}${rightContext}`;
 
     fs.unlinkSync(path.join(__dirname, _url));
     fs.writeFileSync(path.join(__dirname, _url), final);

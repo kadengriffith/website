@@ -23,14 +23,17 @@ Let's go through the different types of methods available:
 
 ```
 PLEASE NOTE
+
 properties => JS Object with common HTML DOM Attributes to be attached to the created element
   eg. {tag: 'img', src: '/img/example.png', class: 'myBeautifulExample'}
     = Tag within the properties object overwrites the default div tag. Any HTML DOM element type is accepted.
-    ? Tags are unfiltered meaning use can be infinitely custom eg. {tag: 'ButtermilkPancakes'} is completely valid and would return <ButtermilkPancakes></ButtermilkPancakes> if placed inside the getElement() method. This could be useful for templating or advanced HTML manipulation.
-
+    ? Tags are unfiltered meaning use can be infinitely custom eg. getElement({tag: 'ButtermilkPancakes'}) is completely valid
+      expected output: <ButtermilkPancakes></ButtermilkPancakes>
+      
 e => Commonly used to replace the string and meaning of 'element' in this file
 
 METHODS
+
 // Write HTML document
 getFile(properties)
 
@@ -45,7 +48,6 @@ writeOpenElement(properties)
 
 // Returns an element with configurable tag type and properties
 getElement(properties)
-
 
 // Returns an open ended element with configurable tag type and properties
 getOpenElement(properties)

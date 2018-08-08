@@ -2,7 +2,8 @@
 // Descr : Window Functions
 
 const $ = require('kbrew_hypertxt'),
-  Pages = require('./html/Pages'),
+  u = require('./objects/Util'),
+  Pages = require('./objects/Pages'),
   firebase = require('firebase/app');
 
 require('firebase/database');
@@ -33,6 +34,7 @@ module.exports = {
                   verification_sent: true
                 }).then(() => {
                   displayMessage(`w:Please check ${user.email} for a link to verify your account.`);
+                  setTimeout(logout, 6000);
                 }).catch(err => {
                   displayMessage(`e:Error ${err.message}`);
                 });
@@ -50,7 +52,7 @@ module.exports = {
     function toggleSignedIn(state) {
       firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value').then(user => {
         firebase.database().ref(`users/${user.key}`).update({
-          times_visited: user.val().times_visited ? user.val().times_visited + 1 : 1
+          times_visited: user.val().times_visited ? user.val().times_visited + 1 : 0
         }).then(() => {
           for(let el of $.queryAll('.signedinstate')) {
             $.clear(el);
@@ -87,6 +89,7 @@ module.exports = {
           displayMessage(`e:Error: ${err.message}`);
         }
       });
+      return false;
     };
 
     window.logout = () => {
@@ -106,16 +109,17 @@ module.exports = {
       toggleMenu(false);
 
       if(firebase.auth().currentUser && !firebase.auth().currentUser.emailVerified) {
-        whichPage = /learn/.test(whichPage) ? whichPage : '';
+        whichPage = 'learn';
         displayMessage(`w:Please check ${firebase.auth().currentUser.email} for a link to verify your account.`);
+        setTimeout(logout, 6000);
       } else {
         $.query('body').style.backgroundColor = '#f4f4f4';
         $.clear($.get('.wrapper'));
       }
 
       if(!navigator.onLine) {
-        displayMessage(`w:No network connection detected.<br>Please connect to the internet to access full functionality.`);
         whichPage = !/(support|privacy-policy)/.test(whichPage) ? 'learn' : whichPage;
+        displayMessage(`w:No network connection detected.<br>Please connect to the internet to access full functionality.`);
       }
 
       if(/learn/.test(whichPage)) {
@@ -147,9 +151,14 @@ module.exports = {
             });
           } else {
             $.get('#title').innerHTML = user.val().times_visited > 5 ? `Welcome back, ${user.val().first_name}` : `Welcome, ${user.val().first_name}`;
-            $.add($.get('.wrapper'), Pages.account(user.val()));
+            firebase.database().ref(`paypal_buttons/unsubscribe`).once('value').then(unsubscribeButton => {
+              $.add($.get('.wrapper'), Pages.account(user.val(), false, unsubscribeButton.val()));
+              end();
+            }).catch(err => {
+              displayMessage(`e:Error: ${err.message}`);
+              end();
+            });
           }
-          end();
         }).catch(err => {
           displayMessage(`e:Error: ${err.message}`);
           end();
@@ -167,6 +176,7 @@ module.exports = {
               if(_user) {
                 $.get('#title').innerHTML = `${_user.first_name}'s Account`;
                 $.add($.get('.wrapper'), Pages.account(_user, true));
+                end();
               } else {
                 firebase.database().ref(`active_accounts`).once('value').then(accounts => {
                   $.get('#title').innerHTML = `Admin Panel`;
@@ -178,7 +188,6 @@ module.exports = {
                   end();
                 });
               }
-              end();
             }).catch(err => {
               displayMessage(`e:Error: ${err.message}`);
               end();
@@ -192,26 +201,26 @@ module.exports = {
           end();
         });
       } else if(/pay/.test(whichPage)) {
-        $.query('body').style.backgroundColor = '#368ca3';
         $.get('#title').innerHTML = `Byte Wave  |  Subscribe`;
         let name_to_search = options;
         name_to_search = name_to_search.replace(/\|/g, '');
         name_to_search = name_to_search.replace(/ /g, '');
-        console.log(name_to_search);
         firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value').then(user => {
           firebase.database().ref(`users/${firebase.auth().currentUser.uid}/projects/${name_to_search}`).once('value').then(project => {
             firebase.database().ref(`paypal_buttons/${project.val().plan}`).once('value').then(payButton => {
-              $.add($.get('.wrapper'), Pages.pay(user.val(), project.val()) + $.getElement({
-                class: 'lazy anim-grow pay-container',
-                contains: payButton.val()
-              }));
+              $.add($.get('.wrapper'), Pages.pay(user.val(), project.val()));
+              if(!u.isFullscreen()) {
+                $.add($.get('.wrapper'), $.getElement({
+                  class: 'pay-container',
+                  contains: payButton.val()
+                }) + $.dln());
+              }
               end();
             });
           });
         });
       } else if(/(support|account-services)/.test(whichPage)) {
         $.get('#title').innerHTML = `Byte Wave  |  Support`;
-        $.query('body').style.backgroundColor = '#368ca3';
         $.add($.get('.wrapper'), Pages.support());
         end();
       } else if(/privacy-policy/.test(whichPage)) {
@@ -226,7 +235,7 @@ module.exports = {
     function getParameterByName(name, url) {
       if(!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, '\\$&');
-      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
         results = regex.exec(url);
       if(!results) return null;
       if(!results[2]) return '';
@@ -277,7 +286,7 @@ module.exports = {
         name = $.get('#projectName2').value;
       console.log(name);
       if(account_code.length < 5) {
-        displayMessage(`e:Error: Account code most be at least 5 digits.`);
+        displayMessage(`e:Error: Account code must be at least 5 digits.`);
       } else if(name.length === 0) {
         displayMessage(`e:Error: Project name needed for search.`);
       } else {
@@ -316,7 +325,7 @@ module.exports = {
     window.addSubscription = () => {
       let account_code = $.get('#accountCode2').value;
       if(account_code.length < 5) {
-        displayMessage(`e:Error: Account code most be at least 5 digits.`);
+        displayMessage(`e:Error: Account code must be at least 5 digits.`);
       } else {
         firebase.database().ref('paypal_values').once('value').then(plans => {
           let project = {
@@ -367,29 +376,5 @@ module.exports = {
         }
       }
     };
-
-    window.download = () => {
-      // Show the prompt
-      deferredPrompt.prompt();
-      // Wait for the user to respond to the prompt
-      deferredPrompt.userChoice
-        .then((choiceResult) => {
-          if(choiceResult.outcome === 'accepted') {
-            console.log('User accepted the A2HS prompt');
-          } else {
-            console.log('User dismissed the A2HS prompt');
-          }
-          deferredPrompt = null;
-        });
-    };
-
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
-      // Stash the event so it can be triggered later.
-      deferredPrompt = e;
-    });
   }
 };

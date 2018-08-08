@@ -34,7 +34,7 @@ module.exports = {
         opacity: 0,
         duration: 1000,
         direction: 'reverse',
-        delay: 325,
+        delay: 425,
         rotate: '4turn',
         complete: amin => {
           anime({
@@ -60,7 +60,7 @@ module.exports = {
       });
 
       anime({
-        targets: '.hero-text',
+        targets: '.hero-container .text-title',
         duration: 1000,
         delay: 400,
         opacity: 1,
@@ -70,10 +70,10 @@ module.exports = {
 
     function runIndexAnimations(animation) {
       function typeWord() {
-        if($('.hero-text')) {
+        if($('#join')) {
           let words = ['Ride', 'Catch', 'See', 'Feel', 'Become', 'Join', 'Share'],
             index = Math.floor(Math.random() * words.length),
-            r = $('.hero-text').innerHTML;
+            r = $('#join').innerHTML;
 
           if(new RegExp(words[index]).test(r)) {
             index = index === 0 ? index + 1 : index - 1;
@@ -82,11 +82,11 @@ module.exports = {
           let a = Array.from(words[index]),
             i = a.length - 1;
 
-          $('.hero-text').innerHTML = r.replace(/(Ride|Catch|See|Feel|Become|Join|Share)/, '');;
+          $('#join').innerHTML = r.replace(/(Ride|Catch|See|Feel|Become|Join|Share)/, '');;
 
           function Loop() {
             setTimeout(() => {
-              $('.hero-text').innerHTML = `${a[i]}${$('.hero-text').innerHTML}`;
+              $('#join').innerHTML = `${a[i]}${$('#join').innerHTML}`;
               i--;
               if(i >= 0) Loop();
             }, 100)
@@ -97,17 +97,15 @@ module.exports = {
       }
 
       function moveWhales() {
-        if(qA('.whale')) {
-          for(let i = 0; i < qA('.whale').length; i++) {
-            anime({
-              targets: qA('.whale')[i],
-              rotate: '2turn',
-              easing: 'easeInSine',
-              delay: i * 75,
-              elasticity: 6000,
-              duration: 4000
-            });
-          }
+        for(let i = 0; i < qA('.whale').length; i++) {
+          anime({
+            targets: qA('.whale')[i],
+            rotate: '2turn',
+            easing: 'easeInSine',
+            delay: i * 75,
+            elasticity: 6000,
+            duration: 4000
+          });
         }
       }
 

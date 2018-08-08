@@ -21,7 +21,7 @@
           console.log(`=>  Found a Directory | ...${PATH.substring(PATH.length - 26, PATH.length)}`);
           _Assets(PATH);
         } else {
-          if(/\.(html|scss|less|css|js|mjs|svg|gif|eot|ttf|png|jpg|jpeg|bmp|woff|woff2|wav|mp3)$/i.test(file)) {
+          if(/\.(map|html|scss|less|css|js|mjs|svg|gif|eot|ttf|png|jpg|jpeg|bmp|woff|woff2|wav|mp3)$/i.test(file)) {
             _acc.unshift(/(icon|launch|splash|apple|android|tile|touch|app)/i.test(file) ? `'/favicons/${file}'` : `'/${file}'`);
           }
         }
