@@ -227,7 +227,6 @@ const $ = require('kbrew_hypertxt'),
             contains: $.getElement({
               tag: 'button',
               type: 'submit',
-              onclick: "signin();",
               class: 'main-button',
               contains: 'Sign In'
             })
@@ -312,9 +311,7 @@ const $ = require('kbrew_hypertxt'),
               tag: 'input',
               placeholder: 'Phone (ex. 3074351234)',
               inputmode: 'numeric',
-              pattern: '[0-9]',
-              minlength: 10,
-              maxlength: 10,
+              pattern: '[0-9]{10,10}',
               class: 'input',
               id: 'phone',
               required: true
@@ -352,7 +349,6 @@ const $ = require('kbrew_hypertxt'),
             contains: $.getElement({
               tag: 'button',
               type: 'submit',
-              onclick: "register();",
               class: 'main-button',
               contains: 'Register'
             }) + $.dln()
@@ -478,7 +474,7 @@ const $ = require('kbrew_hypertxt'),
           contains: 'Admin Panel'
         }) + $.getElement({
           class: 'text subtitle',
-          contains: 'Active account list:'
+          contains: 'Active Account List:'
         }) + details
       }) + $.getElement({
         class: 'container',
@@ -495,7 +491,7 @@ const $ = require('kbrew_hypertxt'),
         }) + $.getElement({
           tag: 'form',
           method: 'POST',
-          onsubmit: 'activateAccount();',
+          onsubmit: 'return activateAccount();',
           contains: $.getElement({
             class: 'text subtitle',
             contains: 'Activate Account:'
@@ -513,18 +509,16 @@ const $ = require('kbrew_hypertxt'),
           }) + $.getElement({
             tag: 'button',
             type: 'submit',
-            onsubmit: "activateAccount();",
-            onclick: "activateAccount();",
             class: 'main-button-dark',
             contains: 'Add'
           })
         }) + $.getElement({
           tag: 'form',
           method: 'POST',
-          onsubmit: 'addSubscription();',
+          onsubmit: 'return addSubscription();',
           contains: $.getElement({
             class: 'text subtitle',
-            contains: 'Add a subscription:'
+            contains: 'Add a Subscription:'
           }) + $.getElement({
             tag: 'label',
             class: 'label',
@@ -578,15 +572,13 @@ const $ = require('kbrew_hypertxt'),
           }) + $.getElement({
             tag: 'button',
             type: 'submit',
-            onsubmit: "addSubscription();",
-            onclick: "addSubscription();",
             class: 'main-button-dark',
             contains: 'Add'
           })
         }) + $.getElement({
           tag: 'form',
           method: 'POST',
-          onsubmit: 'activateSubscription();',
+          onsubmit: 'return activateSubscription();',
           contains: $.getElement({
             class: 'text subtitle',
             contains: 'Activate Subscription:'
@@ -614,8 +606,6 @@ const $ = require('kbrew_hypertxt'),
           }) + $.getElement({
             tag: 'button',
             type: 'submit',
-            onsubmit: "activateSubscription();",
-            onclick: "activateSubscription();",
             class: 'main-button-dark',
             contains: 'Activate'
           })
@@ -690,9 +680,9 @@ const $ = require('kbrew_hypertxt'),
             contains: 'For any questions or technical support please contact:' + $.dln() + 'Kaden Griffith, Founder & Lead Engineer' + $.ln() + $.getElement({
               tag: 'a',
               class: 'link',
-              href: 'mailto:kaden@bytewave-apps.com',
+              href: 'mailto:info@bytewave-apps.com',
               alt: 'Support Email',
-              contains: 'kaden@bytewave-apps.com'
+              contains: 'info@bytewave-apps.com'
             })
           })
         })
@@ -725,9 +715,9 @@ const $ = require('kbrew_hypertxt'),
           contains: `If any change to this Policy occurs you may be notified via email notification. If you have any questions or concerns about our Privacy Policy please contact ` + $.getElement({
             tag: 'a',
             class: 'link inline',
-            href: 'mailto:kaden@bytewave-apps.com',
+            href: 'mailto:info@bytewave-apps.com',
             alt: 'Support Email',
-            contains: 'kaden@bytewave-apps.com'
+            contains: 'info@bytewave-apps.com'
           }) + ` for further information.`
         })
       }) + $.dln() + C.footer();

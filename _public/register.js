@@ -84,8 +84,20 @@ module.exports = {
                     });
                   }
                 });
-                showPage('learn');
-                displayMessage(`s:Your account is ready!`);
+                firebase.auth().currentUser.sendEmailVerification().then(() => {
+                  firebase.database().ref(`users/${d.account_id}`).update({
+                    verification_sent: true,
+                    messages: ['s:Your account is ready!',
+                      `w:Please check your email for a link to verify your account.`
+                    ]
+                  }).then(() => {
+                    showPage('learn');
+                  }).catch(err => {
+                    displayMessage(`e:Error ${err.message}`);
+                  });
+                }).catch(err => {
+                  displayMessage(`e:Error ${err.message}`);
+                });
               });
             }).catch(err => {
               toggleLoading(false);

@@ -6,6 +6,8 @@ const $ = require('kbrew_hypertxt').get,
 
 module.exports = {
   run: () => {
+    let textChanger;
+
     function animateStartup() {
       anime({
         targets: '.background',
@@ -85,11 +87,11 @@ module.exports = {
           $('#join').innerHTML = r.replace(/(Ride|Catch|See|Feel|Become|Join|Share)/, '');;
 
           function Loop() {
-            setTimeout(() => {
+            textChanger = setTimeout(() => {
               $('#join').innerHTML = `${a[i]}${$('#join').innerHTML}`;
               i--;
               if(i >= 0) Loop();
-            }, 100)
+            }, 100);
           }
 
           Loop();

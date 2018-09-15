@@ -26,26 +26,6 @@ module.exports = {
         if(/(profile)/.test(getParameterByName('p'))) {
           showPage(getParameterByName('p'));
         }
-        if(!user.emailVerified) {
-          firebase.database().ref(`users/${user.uid}`).once('value').then(account => {
-            if(!account.val().verification_sent) {
-              user.sendEmailVerification().then(() => {
-                firebase.database().ref(`users/${user.uid}`).update({
-                  verification_sent: true
-                }).then(() => {
-                  displayMessage(`w:Please check ${user.email} for a link to verify your account.`);
-                  setTimeout(logout, 6000);
-                }).catch(err => {
-                  displayMessage(`e:Error ${err.message}`);
-                });
-              }).catch(err => {
-                displayMessage(`e:Error ${err.message}`);
-              });
-            }
-          }).catch(err => {
-            displayMessage(`e:Error ${err.message}`);
-          });
-        }
       }
     });
 
@@ -70,6 +50,14 @@ module.exports = {
               }));
             }
           }
+          firebase.database().ref(`users/${user.key}`).once('value').then(account => {
+            if(account.val().messages) {
+              account.val().messages.forEach(message => {
+                displayMessage(message);
+              });
+              firebase.database().ref(`users/${user.key}/messages`).remove();
+            }
+          });
         }).catch(err => {
           displayMessage(`e:Error: ${err.message}`);
         });
@@ -98,24 +86,28 @@ module.exports = {
       });
     };
 
-    window.showPage = (whichPage, options) => {
+    window.showPage = (whichPage, options = {}) => {
       toggleLoading(true);
 
       function end() {
         runLazyLoadingStartup();
         toggleLoading(false);
+        appendMessages();
+      }
+
+      function appendMessages() {
+        if(options.messages) {
+          options.messages.forEach(message => {
+            displayMessage(message);
+          });
+        }
       }
 
       toggleMenu(false);
 
-      if(firebase.auth().currentUser && !firebase.auth().currentUser.emailVerified) {
-        whichPage = 'learn';
-        displayMessage(`w:Please check ${firebase.auth().currentUser.email} for a link to verify your account.`);
-        setTimeout(logout, 6000);
-      } else {
-        $.query('body').style.backgroundColor = '#f4f4f4';
-        $.clear($.get('.wrapper'));
-      }
+      $.query('body').style.backgroundColor = '#f4f4f4';
+
+      $.clear($.get('.wrapper'));
 
       if(!navigator.onLine) {
         whichPage = !/(support|privacy-policy)/.test(whichPage) ? 'learn' : whichPage;
@@ -125,6 +117,11 @@ module.exports = {
       if(/learn/.test(whichPage)) {
         if(getParameterByName('p')) {
           window.location = '/';
+        } else if(options.messages) {
+          // Registration completed
+          $.get('#title').innerHTML = `Go check your account!`;
+          $.add($.get('.wrapper'), Pages.index());
+          end();
         } else {
           window.location.reload();
         }
@@ -232,8 +229,7 @@ module.exports = {
       }
     };
 
-    function getParameterByName(name, url) {
-      if(!url) url = window.location.href;
+    function getParameterByName(name, url = window.location.href) {
       name = name.replace(/[\[\]]/g, '\\$&');
       let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
         results = regex.exec(url);
@@ -251,6 +247,7 @@ module.exports = {
       import( /* webpackChunkName: "registration" */ './register').then(register => {
         register.createUser(firebase);
       });
+      return false;
     };
 
     window.activateAccount = () => {
@@ -262,7 +259,7 @@ module.exports = {
           let verified = true;
           accounts.forEach(account => {
             if(account.val().account_code === account_code) {
-              return verified = false;
+              verified = false;
             }
           });
           if(verified) {
@@ -279,6 +276,7 @@ module.exports = {
           }
         });
       }
+      return false;
     };
 
     window.activateSubscription = () => {
@@ -318,8 +316,9 @@ module.exports = {
           }
         }).catch(err => {
           displayMessage(`e:Error: ${err.message}`);
-        });;
+        });
       }
+      return false;
     };
 
     window.addSubscription = () => {
@@ -360,6 +359,7 @@ module.exports = {
           displayMessage(`e:Error: ${err.message}`);
         });
       }
+      return false;
     };
 
     window.send = what => {
@@ -375,6 +375,7 @@ module.exports = {
           });
         }
       }
+      return false;
     };
   }
 };
