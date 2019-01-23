@@ -1,0 +1,64 @@
+@import 'app';
+@import 'inputs';
+
+.info {
+  margin: 1em auto;
+}
+
+ul {
+  margin: 0;
+  padding-left: 1em;
+
+  li {
+    list-style: none;
+    font-size: 11px;
+    margin: 0.25em;
+  }
+
+  li:before {
+    content: '';
+    display: inline-block;
+    height: 12px;
+    width: 20px;
+    margin-right: 3px;
+    background-image: url('../$assets/img/whale-white.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+}
+
+.inline {
+  display: inline-block;
+  margin: 1em 6px 0;
+}
+
+a.link {
+  margin-left: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  color: clr(alt);
+  text-decoration-color: clr(primary);
+}
+
+a.link:hover {
+  text-decoration: underline;
+}
+
+.grid {
+  form {
+    display: grid;
+    margin: 0;
+    font-size: 16px;
+    width: 250px;
+
+    .grid-2 {
+      grid-gap: 1em;
+      margin: 2em -100px 0;
+
+      @include respond-to(handhelds) {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}

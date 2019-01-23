@@ -1,11 +1,7 @@
 {
-  "background_color": "#aaaaaa",
-  "theme_color": "#f4f4f4",
-  "name": "Byte Wave",
   "short_name": "Byte Wave",
-  "display": "standalone",
-  "orientation": "portrait",
-  "start_url": "/",
+  "name": "Byte Wave",
+  "description": "A client portal for Byte Wave customers.",
   "icons": [{
     "src": "favicons/apple-touch-icon-57x57.png",
     "sizes": "57x57",
@@ -58,5 +54,11 @@
     "src": "favicons/app-512.png",
     "sizes": "512x512",
     "type": "image/png"
-  }]
+  }],
+  "start_url": "/",
+  "background_color": "#f4f4f4",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "theme_color": "#f4f4f4"
 }

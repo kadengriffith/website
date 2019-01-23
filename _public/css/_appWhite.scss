@@ -1,0 +1,120 @@
+@import 'general';
+@import 'grid';
+@import 'footerWhite';
+
+.title,
+.text,
+#profile {
+  color: clr(grey);
+}
+
+a:-webkit-any-link {
+  color: clr(grey);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a:-webkit-any-link:hover {
+  color: clr(alt);
+  text-decoration: underline;
+}
+
+#nav {
+  display: grid;
+  grid-template-columns: repeat(3, auto) 1fr;
+  margin: 1em 0;
+  transition: padding 0s ease-in;
+
+  @include respond-to(handhelds) {
+    grid-template-columns: 1fr;
+  }
+
+  #nav-logo {
+    cursor: pointer;
+    height: 40px;
+    width: 150px;
+    margin-top: -4px;
+    margin-left: 1em;
+    object-fit: contain;
+    background: url("../$assets/img/bytewave-text.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  #nav-links {
+    margin: 0;
+
+    @include respond-to(handhelds) {
+      overflow: hidden;
+      overflow-x: scroll;
+    }
+
+    a.link {
+      align-self: flex-end;
+      justify-self: center;
+      width: fit-content;
+      margin: 0 0 0 1em;
+      text-decoration: none;
+      color: clr(grey);
+      font-size: 18px;
+
+      @include respond-to(handhelds) {
+        margin: 0 0.5em;
+        padding: 1em;
+      }
+    }
+
+    a.link:hover {
+      color: clr(alt);
+    }
+  }
+
+  .sticky {
+    top: 0;
+    width: 100%;
+    position: fixed;
+    background: clr(light);
+    box-shadow: $shadow;
+    z-index: 999;
+  }
+}
+
+#messages {
+  display: none;
+  position: fixed;
+  padding: 0.5em;
+  opacity: 0.96;
+  top: 52px;
+  text-align: center;
+  left: 0;
+  right: 0;
+  z-index: 450;
+  box-shadow: $shadow;
+  cursor: pointer;
+  color: clr(light);
+
+  .link {
+    color: clr(grey);
+    text-decoration: none;
+  }
+
+  .link:hover {
+    color: clr(dark);
+    text-decoration: underline;
+  }
+
+  @include respond-to(handhelds) {
+    margin-top: 1em;
+    width: auto;
+  }
+}
+
+#root {
+  height: fit-content;
+  margin: 0 1em;
+
+  .grid {
+    margin: 0 auto;
+  }
+}

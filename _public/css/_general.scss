@@ -1,0 +1,100 @@
+@import 'scroll';
+
+$colors: (grey: #777777,
+alt: #71ACBC,
+primary: #368ca3,
+primary-light: lighten(#368ca3, 3%),
+primary-lighter: lighten(#368ca3, 20%),
+dark: #263238,
+dark-lighter: lighten(#263238, 20%),
+light: #f4f4f4,
+light-darker: darken(#f4f4f4, 20%),
+green: #26c281,
+red: #ec644b,
+yellow: #eccc68,
+shadow: rgba(0, 0, 0, 0.17),
+invisible: rgba(0, 0, 0, 0));
+
+@function clr($name) {
+  @return map-get($colors, $name)
+}
+
+$break-small: 900px;
+$break-large: 901px;
+
+@mixin respond-to($media) {
+  @if $media==handhelds {
+    @media only screen and (max-width: $break-small) {
+      @content;
+    }
+  }
+
+  @else if $media==medium-screens {
+    @media only screen and (min-width: $break-small + 1) and (max-width: $break-large - 1) {
+      @content;
+    }
+  }
+
+  @else if $media==wide-screens {
+    @media only screen and (min-width: $break-large) {
+      @content;
+    }
+  }
+}
+
+$shadow: 0 0 4px clr(shadow);
+$lighten: lighten(clr(light), 1%);
+
+* {
+  -webkit-tap-highlight-color: transparent !important;
+  tap-highlight-color: transparent !important;
+  outline: none !important;
+  transition: all 0.1s ease-out;
+}
+
+.title,
+h1 {
+  text-align: center;
+  font-size: 40px;
+  font-weight: normal;
+  color: clr(light);
+  align-self: baseline;
+  justify-self: center;
+}
+
+.section-title {
+  justify-self: center;
+  padding: 0;
+  margin: 0.5em 0;
+  font-weight: bold;
+  font-size: 20px;
+  color: clr(grey);
+}
+
+.text {
+  margin: 1em 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#profile {
+  display: flex;
+  font-size: 32px;
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  color: clr(light);
+  text-decoration: none;
+  cursor: pointer;
+
+  i {
+    align-self: center;
+    justify-self: center;
+  }
+}
+
+#profile:hover {
+  color: clr(alt);
+}

@@ -1,0 +1,81 @@
+#footer {
+  a.link {
+    margin: 0.5em;
+
+    i {
+      color: clr(alt);
+      padding: 0.5em;
+      border: 1px solid clr(light);
+      border-radius: 50%;
+    }
+
+    i:hover {
+      border: 1px solid clr(alt);
+      background-color: $lighten;
+    }
+  }
+
+  .grid {
+    width: 100%;
+    margin: 0;
+    padding: 1em 0 0;
+    padding-bottom: 1.75em;
+    grid-gap: 0;
+
+    .grid-6 {
+      margin: 0 0 1em;
+      grid-gap: 5px;
+      font-size: 18px;
+
+      .venmo {
+        width: 36px;
+        height: 18px;
+        background: url('../$assets/img/venmo-logo-white.png');
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+    }
+
+    a.link {
+      i {
+        color: clr(light);
+      }
+    }
+
+    a.link:hover {
+      i {
+        color: clr(alt);
+      }
+    }
+
+    .grid-2 {
+      width: fit-content;
+      margin: 0 auto 1em;
+
+      @include respond-to(handhelds) {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      a.link {
+        font-size: 11px;
+        display: inline-block;
+        text-decoration: none;
+        margin: 0 2px;
+        color: clr(light);
+        text-decoration-color: clr(alt);
+      }
+
+      a.link:hover {
+        color: clr(alt);
+        text-decoration: underline;
+      }
+    }
+
+    .copyright {
+      color: clr(white);
+      cursor: default;
+      font-size: 11px;
+    }
+  }
+}

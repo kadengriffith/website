@@ -1,0 +1,37 @@
+@import 'appWhite';
+@import 'inputs';
+
+#payment-container {
+    display: grid;
+    background-color: clr(light);
+    box-shadow: $shadow;
+    justify-items: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 1em;
+    width: 60%;
+
+    @include respond-to(handhelds) {
+        width: calc(100% - 2em);
+    }
+
+    #dropin-container {
+        margin: 0;
+        width: 100%;
+    }
+
+    #requesting {
+        background-color: clr(green);
+        background-blend-mode: overlay;
+        color: clr(light);
+        width: 100%;
+        text-align: center;
+        padding: 1em;
+    }
+
+    #process {
+        width: 100%;
+        text-align: center;
+        padding: 1em;
+    }
+}

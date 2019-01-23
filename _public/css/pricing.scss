@@ -1,0 +1,61 @@
+@import 'app';
+@import 'inputs';
+
+.grid {
+  width: 60%;
+  grid-gap: 1em;
+  margin: 0 auto;
+  text-align: center;
+
+  .inline {
+    padding-left: 3px;
+    text-decoration: underline;
+  }
+
+  @include respond-to(handhelds) {
+    width: 100%;
+  }
+
+  .outlined {
+    border: 2px solid clr(green);
+  }
+
+  .grid {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    color: clr(grey);
+    background: clr(light);
+    box-shadow: $shadow;
+
+    .title {
+      color: clr(grey);
+      margin: 0.5em 0 0;
+      font-size: 28px;
+    }
+
+    i {
+      align-self: flex-start;
+      font-size: 40px;
+      height: 40px;
+      color: clr(grey);
+    }
+
+    .price {
+      align-self: flex-start;
+      margin: 1em;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .description {
+      margin: 0.5em 1em;
+      color: clr(grey);
+      justify-self: left;
+      line-height: 22px;
+      text-align: justify;
+      padding-left: 2px;
+      border-left: 2px solid clr(green);
+    }
+  }
+}

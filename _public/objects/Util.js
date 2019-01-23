@@ -2,15 +2,20 @@
 
 'use strict';
 (() => {
-  class util {
+  class Util {
+    constructor() {
+      this.orientation = null;
+    }
+
     verifyOrientation() {
-      const orientation = window.matchMedia('(orientation: portrait)').matches || window.innerHeight > window.innerwidth ? 'portrait' : 'landscape';
-      if(orientation === 'portrait' && this.isStandalone()) {
-        window.innerHeight = window.screen.height;
-      } else if(orientation === 'landscape' && this.isStandalone()) {
-        window.innerHeight = window.screen.width;
+      if (window.matchMedia("(orientation: portrait)").matches) {
+        this.orientation = 'portrait';
       }
-      return orientation;
+
+      if (window.matchMedia("(orientation: landscape)").matches) {
+        this.orientation = 'landscape';
+      }
+      return this.orientation;
     }
 
     isMobile() {
@@ -18,7 +23,7 @@
     }
 
     isStandalone() {
-      return(window.matchMedia('(display-mode: standalone)').matches || 'standalone' in navigator);
+      return (window.matchMedia('(display-mode: standalone)').matches || 'standalone' in navigator);
     }
 
     isFullscreen() {
@@ -26,5 +31,5 @@
     }
   }
 
-  module.exports = new util();
+  module.exports = new Util();
 })();
