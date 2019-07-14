@@ -1,0 +1,307 @@
+@import url("https://fonts.googleapis.com/css?family=Dosis");
+@import "../../App.scss";
+
+main {
+  width: 100vw;
+  overflow-x: hidden;
+
+  section {
+    .grid {
+      width: 100%;
+      margin: 0;
+      overflow: hidden;
+
+      header {
+        display: flex;
+
+        .tagline-container {
+          min-width: 100vw;
+          padding: 35vh auto 45vh;
+          background-image: url("../../img/hl.png");
+          background-attachment: fixed;
+          background-position: top;
+          background-size: cover;
+          background-repeat: no-repeat;
+
+          @include respond-to(handhelds) {
+            background-attachment: scroll;
+          }
+
+          .tagline {
+            width: fit-content;
+            max-width: 90vw;
+            padding: 3px;
+            margin: 35vh auto 45vh;
+            font-size: 40px;
+            color: clr(light);
+            font-weight: normal;
+            background: rgba(0, 0, 0, 0.6);
+
+            @include respond-to(handhelds) {
+              font-size: 32px;
+              width: calc(100vw - 1em);
+            }
+          }
+        }
+      }
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 1em;
+      width: 100%;
+      margin: -100px 0 0;
+      background-image: url("../../img/mow_pattern-02.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+
+      @include respond-to(handhelds) {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-square {
+        display: flex;
+        flex-flow: row wrap;
+        margin-left: 3em;
+        margin-bottom: 1em;
+        background-color: clr(light);
+        justify-content: space-between;
+        box-shadow: 0 0 6px 0 clr(shadow);
+
+        @include respond-to(handhelds) {
+          margin: 0 1em 1em;
+        }
+
+        .contact-picture {
+          height: 120px;
+          width: 120px;
+          box-sizing: border-box;
+          margin: 2em;
+          border-radius: 50%;
+          background-image: url("../../img/headshot.png");
+          background-position: right;
+          background-size: cover;
+          background-repeat: no-repeat;
+
+          @include respond-to(handhelds) {
+            flex: 1 100%;
+            margin: 2em auto;
+            max-width: 120px;
+          }
+        }
+
+        .contact-name {
+          margin: 2em auto 2em 0;
+          justify-self: space-around;
+
+          @include respond-to(handhelds) {
+            margin: 2em auto 2em 2em;
+          }
+        }
+
+        .contact-description {
+          margin: 1em 2em 3em;
+
+          @include respond-to(handhelds) {
+            margin: 1em 1em 3em;
+          }
+        }
+
+        .btn {
+          margin: 0 auto 2em;
+        }
+      }
+
+      .social-square {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-around;
+        height: 50%;
+        padding-bottom: 3em;
+        margin: auto 3em 1em 0;
+        background-color: clr(light);
+        box-shadow: 0 0 6px 0 clr(shadow);
+
+        @include respond-to(handhelds) {
+          margin: 0 1em 1em;
+          height: auto;
+        }
+
+        h3 {
+          width: 100%;
+          text-align: center;
+          margin: 2em auto;
+        }
+
+        a {
+          margin: 2em auto 0;
+          height: fit-content;
+
+          i {
+            color: clr(primary);
+            font-size: 40px;
+            font-weight: normal !important;
+          }
+        }
+
+        a:hover {
+          i {
+            color: clr(alt);
+          }
+        }
+      }
+    }
+
+    #about {
+      padding: 2em 3em;
+
+      @include respond-to(handhelds) {
+        padding: 2em;
+      }
+
+      .text {
+        margin: 1em 0;
+      }
+
+      .text::first-letter {
+        margin-left: 2em;
+      }
+
+      .section-title {
+        margin: 0;
+      }
+    }
+
+    #gallery-preview {
+      margin: 0 -3em;
+      background-image: url("../../img/texture.jpg");
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      padding: 1em 3em;
+      width: 100%;
+      text-align: center;
+
+      @include respond-to(handhelds) {
+        margin: 0 -1em;
+        padding: 1em;
+        background-attachment: scroll;
+      }
+
+      #preview-tile {
+        margin: 0 3em;
+        padding: 1em 0;
+        background-color: clr(light);
+
+        @include respond-to(handhelds) {
+          margin: 0 1em;
+        }
+
+        h3 {
+          margin: 0;
+          padding: 0 0 1em;
+
+          @include respond-to(handhelds) {
+            padding: 0;
+          }
+        }
+
+        #gallery-images {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          grid-gap: 1em;
+          width: calc(100% - 6em);
+          margin: 1em auto;
+
+          @include respond-to(handhelds) {
+            grid-template-columns: 1fr;
+          }
+
+          .img-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 80%;
+            overflow: hidden;
+            box-shadow: 0 0 6px 0 clr(shadow);
+
+            @include respond-to(handhelds) {
+              width: 90%;
+              margin: 0 auto;
+            }
+
+            img {
+              position: absolute;
+              min-width: 1000%;
+              min-height: 1000%;
+              left: -10000%;
+              right: -10000%;
+              top: -10000%;
+              bottom: -10000%;
+              margin: auto auto;
+              transform: scale(0.1);
+              text-indent: -999px;
+            }
+          }
+        }
+      }
+    }
+
+    #review {
+      width: 100vw;
+      padding: 3em 0;
+      text-align: center;
+      background-image: url("../../img/mow_pattern-01.svg");
+      background-repeat: no-repeat;
+      background-position: right;
+      background-size: cover;
+
+      form {
+        display: grid;
+        justify-items: center;
+        width: 70%;
+        margin: 0 auto;
+        padding: 2em;
+        font-family: "Dosis", sans-serif;
+        background: clr(light);
+        box-shadow: 0 0 6px 0 clr(shadow);
+
+        @include respond-to(handhelds) {
+          width: calc(100% - 6em);
+          margin: 0 1em;
+        }
+
+        h3 {
+          width: fit-content;
+          margin: 0 auto;
+          font-family: "Playfair Display", serif;
+        }
+
+        .grid-5 {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          width: fit-content;
+          margin: 0 auto 1em auto;
+          padding: 0 3px;
+
+          .star {
+            font-size: 36px;
+            cursor: pointer;
+            color: clr(mid);
+          }
+
+          .review-point {
+            color: clr(primary);
+          }
+
+          .selected,
+          .star:hover {
+            color: clr(alt);
+          }
+        }
+      }
+    }
+  }
+}

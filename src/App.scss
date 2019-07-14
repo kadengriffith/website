@@ -1,0 +1,150 @@
+@import url("https://fonts.googleapis.com/css?family=Dosis");
+
+$colors: (
+  primary: #43a047,
+  alt: lighten(#43a047, 10%),
+  dark: #444,
+  mid: #aaa,
+  light: #fff,
+  green: #26c281,
+  red: #ec644b,
+  yellow: #eccc68,
+  shadow: rgba(0, 0, 0, 0.17),
+  invisible: rgba(0, 0, 0, 0)
+);
+
+@function clr($name) {
+  @return map-get($colors, $name);
+}
+
+$break-small: 900px;
+$break-large: 901px;
+
+@mixin respond-to($media) {
+  @if $media==handhelds {
+    @media only screen and (max-width: $break-small) {
+      @content;
+    }
+  } @else if $media==medium-screens {
+    @media only screen and (min-width: $break-small + 1) and (max-width: $break-large - 1) {
+      @content;
+    }
+  } @else if $media==wide-screens {
+    @media only screen and (min-width: $break-large) {
+      @content;
+    }
+  }
+}
+
+body,
+#root {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: clr(dark);
+}
+
+#messages {
+  position: fixed;
+  display: none;
+  width: 50vw;
+  padding: 0.5em;
+  opacity: 0.94;
+  margin: 0 auto;
+  border-radius: 5px;
+  top: 75px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  cursor: pointer;
+  color: clr(light);
+  z-index: 999;
+
+  a {
+    color: clr(dark);
+  }
+
+  a:hover {
+    color: clr(mid);
+  }
+
+  @include respond-to(handhelds) {
+    margin-top: 1em auto;
+    width: calc(100vw - 5em);
+  }
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+  color: clr(primary);
+}
+
+a:hover {
+  color: clr(alt);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  box-shadow: 0 0 0 999px clr(light) inset !important;
+  -webkit-text-fill-color: clr(dark) !important;
+}
+
+button {
+  height: 55px;
+}
+
+.btn {
+  width: fit-content;
+  font-family: "Dosis", sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  text-decoration: none;
+  letter-spacing: 2px;
+  color: clr(light);
+  background: clr(primary);
+  padding: 0.75em 1em;
+  text-transform: uppercase;
+  align-self: center;
+  justify-self: center;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 6px 0 clr(shadow);
+
+  @include respond-to(handhelds) {
+    justify-self: center;
+  }
+}
+
+.btn:hover {
+  color: clr(light);
+  text-decoration: none;
+  background: clr(alt);
+}
+
+.grid {
+  display: grid;
+  margin: 0 auto;
+  width: 70%;
+  grid-template-columns: 1fr;
+
+  @include respond-to((handhelds)) {
+    width: calc(100% - 2em);
+    margin: 0 1em;
+  }
+}
+
+form,
+.form {
+  width: 100%;
+}
+
+* {
+  outline: none;
+  -webkit-tap-highlight-color: clr(shadow);
+}

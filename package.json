@@ -1,63 +1,48 @@
 {
-  "name": "bytewave",
-  "version": "1.0.3",
+  "name": "wilsonslawnandlandscape",
+  "version": "1.0.1",
   "description": "A progressive web app made by Kaden Griffith",
-  "repository": "https://github.com/kadengriffith/bytewave.git",
-  "main": "app.js",
-  "kbrew-assets-url": "_dist",
+  "repository": "https://github.com/kadengriffith/wilsonslawnandlandscape.git",
+  "private": true,
+  "author": "Kaden Griffith",
+  "dependencies": {
+    "@material-ui/core": "^4.2.0",
+    "@material-ui/icons": "^4.2.1",
+    "babel-preset-react": "^6.24.1",
+    "firebase": "^6.2.4",
+    "kbrew_hypertxt": "^1.0.6",
+    "material-ui": "^0.20.2",
+    "node-sass": "^4.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-lazy-load": "^3.0.13",
+    "react-number-format": "^4.0.8",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "react-text-mask": "^5.4.3",
+    "socket.io-client": "^2.2.0",
+    "typescript": "^3.5.3"
+  },
   "scripts": {
-    "start": "yarn build-clear && webpack-dev-server --mode development --open --hot",
-    "start-relay": "yarn build-clear && webpack-dev-server --host 10.0.0.199 --mode development --open --hot",
-    "build": "echo Initiating Build... && npm run build-clear && webpack -p --optimize-minimize && yarn build-dist",
-    "build-clear": "rm -r ./_public/routes/html && mkdir ./_public/routes/html && yarn build-routes",
-    "build-dist": "cp ./_server/pwa/manifest.json ./_dist/manifest.json && cp ./_server/pwa/service-worker.js ./_dist/service-worker.js && mkdir ./_dist/.well-known && cp ./_server/apple-developer-merchantid-domain-association ./_dist/.well-known/apple-developer-merchantid-domain-association && yarn build-list",
-    "build-list": "node ./_server/_util/asset.rebuild.js",
-    "build-routes": "./write.sh",
-    "connect": "firebase login && firebase use --add",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "deploy": "yarn build && firebase deploy"
   },
-  "author": "Kaden Griffith",
-  "license": "ISC",
-  "devDependencies": {
-    "autoprefixer": "^8.5.2",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "clean-webpack-plugin": "^0.1.19",
-    "css-loader": "^0.28.11",
-    "extract-loader": "^2.0.1",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "file-loader": "^1.1.11",
-    "fs": "0.0.1-security",
-    "html-loader": "^0.5.5",
-    "html-minifier": "^3.5.18",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.4.1",
-    "path": "^0.12.7",
-    "postcss": "^6.0.23",
-    "postcss-browser-reporter": "^0.5.0",
-    "postcss-import": "^11.1.0",
-    "postcss-loader": "^2.1.5",
-    "postcss-preset-env": "^5.2.2",
-    "postcss-reporter": "^5.0.0",
-    "postcss-url": "^7.3.2",
-    "sass-loader": "^7.1.0",
-    "style-loader": "^0.21.0",
-    "uglifyjs-webpack-plugin": "^1.2.5",
-    "url-loader": "^1.0.1",
-    "webpack": "^4.10.2",
-    "webpack-cli": "^2.1.5",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-require-http": "^0.4.3"
+  "eslintConfig": {
+    "extends": "react-app"
   },
-  "dependencies": {
-    "animejs": "^2.2.0",
-    "firebase": "^5.3.0",
-    "intersection-observer": "^0.5.0",
-    "kbrew_hypertxt": "^1.0.4",
-    "node-sass": "^4.9.2",
-    "socket.io-client": "^2.2.0"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

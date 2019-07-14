@@ -1,0 +1,22 @@
+.todo {
+  width: calc(100% - 1em);
+  padding: 0.5em;
+  margin: 2px 0;
+  background-color: #aaa;
+  cursor: default;
+
+  .delete {
+    background: #ff0000;
+    color: #fff;
+    border: 1px solid #fff;
+    outline: none;
+    font-weight: bolder;
+    cursor: pointer;
+    float: right;
+  }
+}
+
+.todo.completed {
+  background-color: #ddd;
+  text-decoration: line-through;
+}
