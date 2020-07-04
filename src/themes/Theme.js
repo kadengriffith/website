@@ -1,15 +1,14 @@
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import green from "@material-ui/core/colors/green";
-import lgreen from "@material-ui/core/colors/lightGreen";
+import grey from "@material-ui/core/colors/grey";
 
 const Theme = createMuiTheme({
   palette: {
-    primary: green,
-    secondary: lgreen
+    primary: grey,
+    secondary: grey
   },
   typography: {
     fontFamily: [
-      "Dosis",
+      "Barlow",
       "sans-serif",
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',

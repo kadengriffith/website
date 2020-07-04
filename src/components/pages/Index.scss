@@ -1,304 +1,268 @@
-@import url("https://fonts.googleapis.com/css?family=Dosis");
 @import "../../App.scss";
 
 main {
   width: 100vw;
-  overflow-x: hidden;
+  overflow: hidden;
 
   section {
-    .grid {
+    width: 100%;
+    margin: 0;
+
+    #filter {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      margin: 0;
-      overflow: hidden;
+      padding-bottom: 600px;
+      z-index: 4;
+      background-image: linear-gradient(
+        270deg,
+        #6c7a89,
+        #f2f1ef,
+        #95a5a6,
+        #67809f
+      );
+      background-size: 600% 100%;
+      animation-duration: 25s;
+      opacity: 0.36;
+    }
 
-      header {
-        display: flex;
+    #background {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 600px;
+      background: url("../../img/background-highres.jpg");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      z-index: 3;
+      filter: grayscale(0.2);
 
-        .tagline-container {
-          min-width: 100vw;
-          padding: 35vh auto 45vh;
-          background-image: url("../../img/hl.png");
-          background-attachment: fixed;
-          background-position: top;
-          background-size: cover;
-          background-repeat: no-repeat;
+      #name {
+        margin-top: 160px;
+        height: calc(30vw * 0.1721);
+        width: 30vw;
+        background: url("../../img/name.svg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        animation-delay: 0.4s;
+        animation-duration: 3s;
+        box-shadow: $shadow;
+        z-index: 5;
 
-          @include respond-to(handhelds) {
-            background-attachment: scroll;
-          }
-
-          .tagline {
-            width: fit-content;
-            max-width: 90vw;
-            padding: 3px;
-            margin: 35vh auto 45vh;
-            font-size: 40px;
-            color: clr(light);
-            font-weight: normal;
-            background: rgba(0, 0, 0, 0.6);
-
-            @include respond-to(handhelds) {
-              font-size: 32px;
-              width: calc(100vw - 1em);
-            }
-          }
+        @include respond-to(handhelds) {
+          height: calc(80vw * 0.1721);
+          width: 80vw;
         }
       }
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-gap: 1em;
+    #filter::before,
+    #background::before {
+      content: "";
       width: 100%;
-      margin: -100px 0 0;
-      background-image: url("../../img/mow_pattern-02.svg");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: linear-gradient(to bottom, transparent 300px, clr(dark) 93%);
+    }
+
+    #about-start {
+      width: fit-content;
+      margin: -96px 0 0 3.4em;
+      display: block;
+      font-size: 48px;
+      text-transform: uppercase;
+      color: clr(light);
+      animation-delay: 3s;
+      animation-duration: 3s;
+      font-family: "Karla", sans-serif;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      cursor: default;
 
       @include respond-to(handhelds) {
-        grid-template-columns: 1fr;
-      }
-
-      .contact-square {
-        display: flex;
-        flex-flow: row wrap;
-        margin-left: 3em;
-        margin-bottom: 1em;
-        background-color: clr(light);
-        justify-content: space-between;
-        box-shadow: 0 0 6px 0 clr(shadow);
-
-        @include respond-to(handhelds) {
-          margin: 0 1em 1em;
-        }
-
-        .contact-picture {
-          height: 120px;
-          width: 120px;
-          box-sizing: border-box;
-          margin: 2em;
-          border-radius: 50%;
-          background-image: url("../../img/headshot.png");
-          background-position: right;
-          background-size: cover;
-          background-repeat: no-repeat;
-
-          @include respond-to(handhelds) {
-            flex: 1 100%;
-            margin: 2em auto;
-            max-width: 120px;
-          }
-        }
-
-        .contact-name {
-          margin: 2em auto 2em 0;
-          justify-self: space-around;
-
-          @include respond-to(handhelds) {
-            margin: 2em auto 2em 2em;
-          }
-        }
-
-        .contact-description {
-          margin: 1em 2em 3em;
-
-          @include respond-to(handhelds) {
-            margin: 1em 1em 3em;
-          }
-        }
-
-        .btn {
-          margin: 0 auto 2em;
-        }
-      }
-
-      .social-square {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-around;
-        height: 50%;
-        padding-bottom: 3em;
-        margin: auto 3em 1em 0;
-        background-color: clr(light);
-        box-shadow: 0 0 6px 0 clr(shadow);
-
-        @include respond-to(handhelds) {
-          margin: 0 1em 1em;
-          height: auto;
-        }
-
-        h3 {
-          width: 100%;
-          text-align: center;
-          margin: 2em auto;
-        }
-
-        a {
-          margin: 2em auto 0;
-          height: fit-content;
-
-          i {
-            color: clr(primary);
-            font-size: 40px;
-            font-weight: normal !important;
-          }
-        }
-
-        a:hover {
-          i {
-            color: clr(alt);
-          }
-        }
+        width: fit-content;
+        font-size: 40px;
+        margin: -96px auto;
       }
     }
 
     #about {
-      padding: 2em 3em;
+      width: 70%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
 
       @include respond-to(handhelds) {
-        padding: 2em;
+        width: calc(100% - 2em);
       }
 
-      .text {
-        margin: 1em 0;
-      }
-
-      .text::first-letter {
-        margin-left: 2em;
-      }
-
-      .section-title {
-        margin: 0;
-      }
-    }
-
-    #gallery-preview {
-      margin: 0 -3em;
-      background-image: url("../../img/texture.jpg");
-      background-attachment: fixed;
-      background-position: center;
-      background-size: cover;
-      background-repeat: no-repeat;
-      padding: 1em 3em;
-      width: 100%;
-      text-align: center;
-
-      @include respond-to(handhelds) {
-        margin: 0 -1em;
-        padding: 1em;
-        background-attachment: scroll;
-      }
-
-      #preview-tile {
-        margin: 0 3em;
-        padding: 1em 0;
-        background-color: clr(light);
+      p {
+        width: 48%;
+        padding: 1.2em 0 0;
+        cursor: default;
 
         @include respond-to(handhelds) {
-          margin: 0 1em;
+          margin-top: 130px;
         }
+      }
 
-        h3 {
-          margin: 0;
-          padding: 0 0 1em;
+      div {
+        #school1 {
+          height: calc(10vw * 0.8858);
+          width: 10vw;
+          background: url("../../img/s-ku.png");
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+          filter: grayscale(1);
 
           @include respond-to(handhelds) {
-            padding: 0;
+            height: calc(14vw * 0.8858);
+            width: 14vw;
           }
         }
 
-        #gallery-images {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          grid-gap: 1em;
-          width: calc(100% - 6em);
-          margin: 1em auto;
+        #school2 {
+          height: calc(10vw * 0.6181);
+          width: 10vw;
+          margin-top: 4em;
+          background: url("../../img/s-uccs.png");
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+          filter: grayscale(1);
+          opacity: 0.7;
 
           @include respond-to(handhelds) {
-            grid-template-columns: 1fr;
-          }
-
-          .img-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 80%;
-            overflow: hidden;
-            box-shadow: 0 0 6px 0 clr(shadow);
-
-            @include respond-to(handhelds) {
-              width: 90%;
-              margin: 0 auto;
-            }
-
-            img {
-              position: absolute;
-              min-width: 1000%;
-              min-height: 1000%;
-              left: -10000%;
-              right: -10000%;
-              top: -10000%;
-              bottom: -10000%;
-              margin: auto auto;
-              transform: scale(0.1);
-              text-indent: -999px;
-            }
+            height: calc(14vw * 0.6181);
+            width: 14vw;
           }
         }
       }
     }
 
-    #review {
+    #work-start {
+      margin: 0 0 0 -30px;
+      display: block;
+      font-size: 400px;
+      line-height: 350px;
+      text-transform: uppercase;
+      color: clr(light);
+      font-family: "Karla", sans-serif;
+      font-weight: bold;
+      letter-spacing: 0.11em;
+      opacity: 0.25;
+      cursor: default;
+      text-shadow: -1px -1px clr(mid), -2px -2px clr(mid), -3px -3px clr(mid),
+        -4px -4px clr(mid), -5px -5px clr(mid), -6px -6px clr(mid),
+        -7px -7px clr(mid), -8px -8px clr(mid);
+      -webkit-transform: translateX(8px) translateY(8px);
+      transform: translateX(8px) translateY(8px);
+    }
+
+    #work-container {
+      margin-top: calc(-240px - 1em);
+      height: fit-content;
       width: 100vw;
-      padding: 3em 0;
-      text-align: center;
-      background-image: url("../../img/mow_pattern-01.svg");
-      background-repeat: no-repeat;
-      background-position: right;
-      background-size: cover;
+      overflow-x: scroll;
 
-      form {
-        display: grid;
-        justify-items: center;
-        width: 70%;
-        margin: 0 auto;
-        padding: 2em;
-        font-family: "Dosis", sans-serif;
-        background: clr(light);
-        box-shadow: 0 0 6px 0 clr(shadow);
+      #works {
+        width: fit-content;
+        display: flex;
+        padding: 1em;
+        min-height: calc(240px + 1em);
 
-        @include respond-to(handhelds) {
-          width: calc(100% - 6em);
-          margin: 0 1em;
-        }
+        .work {
+          display: block;
+          position: relative;
+          height: 240px;
+          width: 240px;
+          min-width: 240px;
+          margin-right: 1em;
+          padding: 2em;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-around;
+          background-color: clr(dark);
+          border-radius: 5px;
+          box-shadow: $shadow;
+          overflow: hidden;
+          cursor: pointer;
 
-        h3 {
-          width: fit-content;
-          margin: 0 auto;
-          font-family: "Playfair Display", serif;
-        }
-
-        .grid-5 {
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          width: fit-content;
-          margin: 0 auto 1em auto;
-          padding: 0 3px;
-
-          .star {
-            font-size: 36px;
-            cursor: pointer;
-            color: clr(mid);
+          &:last-child {
+            margin-right: 0;
           }
 
-          .review-point {
-            color: clr(primary);
+          &:hover {
+            background-color: lighten(clr(dark), 0.6);
+            box-shadow: 0 0 2px 1px clr(shadow);
+
+            .work-img {
+              filter: grayscale(0);
+            }
           }
 
-          .selected,
-          .star:hover {
-            color: clr(alt);
+          .work-img {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            height: 140px;
+            background-position: top;
+            background-repeat: no-repeat;
+            background-size: cover;
+            filter: grayscale(1);
+            border-bottom: 2px solid clr(mid);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+          }
+
+          .work-title {
+            margin: 100px 0 0 0;
+            text-transform: uppercase;
+            color: clr(light);
+            font-family: "Karla", sans-serif;
+            font-weight: bold;
+            text-shadow: -1px -1px clr(mid), -2px -2px clr(mid);
+            -webkit-transform: translateX(2px) translateY(2px);
+            transform: translateX(2px) translateY(2px);
+            text-align: center;
+          }
+
+          .work-date {
+            text-transform: uppercase;
+            color: clr(light);
+            font-size: 13px;
+            margin: 0;
+            opacity: 0.4;
+            font-family: "Karla", sans-serif;
+          }
+
+          .badge {
+            position: absolute;
+            z-index: 7;
+            bottom: -2px;
+            right: 1px;
+            height: 50px;
+            width: 50px;
+            color: clr(light);
+            display: flex;
+            justify-content: flex-end;
+            align-content: flex-end;
+
+            i {
+              display: block;
+              line-height: 50px;
+              font-size: 50px;
+              opacity: 0.3;
+            }
           }
         }
       }

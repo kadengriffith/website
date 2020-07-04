@@ -4,14 +4,12 @@ import { kbrew_hypertxt } from "kbrew_hypertxt";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import Theme from "./themes/Theme";
 // Global components
-import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 // App pages
 import Index from "./components/pages/Index";
-import Gallery from "./components/pages/Gallery";
-import Contact from "./components/pages/Contact";
-import Terms from "./components/pages/Terms";
-import Privacy from "./components/pages/Privacy";
+import Project from "./components/pages/Project";
+import Login from "./components/pages/Login";
+import Upload from "./components/pages/Upload";
 
 // import Client from "./objects/Client";
 
@@ -91,15 +89,10 @@ export class App extends Component {
   }
 
   render() {
-    if ($.get("#loading").style.display !== "none") {
-      $.get("#loading").style.setProperty("display", "none");
-    }
-
     return (
       <ThemeProvider theme={Theme}>
         <Router>
           <div className="App">
-            <Navbar />
             <Route
               exact
               path="/"
@@ -107,17 +100,27 @@ export class App extends Component {
                 <Index {...props} displayMessage={this.displayMessage} />
               )}
             />
-            <Route exact path="/gallery" component={Gallery} />
             <Route
               exact
-              path="/contact"
+              path="/login"
               render={props => (
-                <Contact {...props} displayMessage={this.displayMessage} />
+                <Login {...props} displayMessage={this.displayMessage} />
               )}
             />
-            <Route exact path="/terms" component={Terms} />
-            <Route exact path="/privacy" component={Privacy} />
-
+            <Route
+              exact
+              path="/upload"
+              render={props => (
+                <Upload {...props} displayMessage={this.displayMessage} />
+              )}
+            />
+            <Route
+              exact
+              path="/project/:id"
+              render={props => (
+                <Project {...props} displayMessage={this.displayMessage} />
+              )}
+            />
             <Footer id="footer" />
           </div>
         </Router>

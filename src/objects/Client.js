@@ -1,21 +1,26 @@
 const firebase = require("firebase/app");
 
 require("firebase/firestore");
+require("firebase/auth");
+require("firebase/storage");
 
 class Client {
   constructor() {
     this.config = {
-      apiKey: "AIzaSyBk1rKRhKkZnGzhvq3zL0eOGqKdr5wKhV0",
-      authDomain: "wilsonslandl-mo.firebaseapp.com",
-      databaseURL: "https://wilsonslandl-mo.firebaseio.com",
-      projectId: "wilsonslandl-mo",
-      storageBucket: "wilsonslandl-mo.appspot.com",
-      messagingSenderId: "920809384091"
+      apiKey: "AIzaSyBNbinO2Na8BoldpUj7D4Fvj9s7bGN9O-Y",
+      authDomain: "kadengriffith-fb.firebaseapp.com",
+      databaseURL: "https://kadengriffith-fb.firebaseio.com",
+      projectId: "kadengriffith-fb",
+      storageBucket: "kadengriffith-fb.appspot.com",
+      messagingSenderId: "318165461741",
+      appId: "1:318165461741:web:a9d267752873f030"
     };
     //
     firebase.initializeApp(this.config);
     //
     this.db = firebase.firestore();
+    this.auth = firebase.auth();
+    this.storage = firebase.storage();
 
     this.db
       .enablePersistence({
@@ -26,14 +31,33 @@ class Client {
       });
   }
 
+  async uploadFile(location, file) {
+    return await this.storage
+      .ref(location)
+      .put(file)
+      .then(() => {
+        return this.storage
+          .ref(location)
+          .getDownloadURL()
+          .then(url => url);
+      })
+      .catch(err => err);
+  }
+
+  async getDownloadURL(folder, file) {
+    return this.storage
+      .ref(`${folder}/${file}`)
+      .getDownloadURL()
+      .then(url => url)
+      .catch(err => err);
+  }
+
   async addToCollection(collection, data) {
     return await this.db
       .collection(collection)
       .add(data)
       .then(docRef => docRef.id)
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
   async setDocument(collection, doc, data) {
@@ -42,9 +66,7 @@ class Client {
       .doc(doc)
       .set(data)
       .then(docRef => docRef.id)
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
   async update(collection, doc, data) {
@@ -52,9 +74,7 @@ class Client {
       .collection(collection)
       .doc(doc)
       .update(data)
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
   async addToRecord(collection, doc, data) {
@@ -64,9 +84,7 @@ class Client {
       .set(data, {
         merge: true
       })
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
   async delete(doc, collection) {
@@ -77,9 +95,7 @@ class Client {
       .then(() => {
         return true;
       })
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
   async read(collection, doc) {
@@ -97,9 +113,7 @@ class Client {
         .collection(collection)
         .get()
         .then(snapshot => snapshot)
-        .catch(err => {
-          console.error(err);
-        });
+        .catch(err => err);
     }
   }
 
@@ -122,15 +136,13 @@ class Client {
         });
         return results;
       })
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
-  async getCollection(collection) {
+  async getCollection(collection, order = "asc") {
     return await this.db
       .collection(collection)
-      .orderBy("timestamp", "desc")
+      .orderBy("timestamp", order)
       .get()
       .then(posts => {
         let docs = [];
@@ -145,9 +157,7 @@ class Client {
 
         return docs;
       })
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
   async getCollectionLength(collection) {
@@ -155,16 +165,14 @@ class Client {
       .collection(collection)
       .get()
       .then(snapshot => Number(snapshot.size))
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 
   async searchForRelated(searchObj) {
     let results = [];
     return await this.db
       .collection(searchObj.collection)
-      .orderBy("timestamp", "desc")
+      .orderBy("timestamp", "asc")
       .get()
       .then(snapshot => {
         snapshot.forEach(doc => {
@@ -190,9 +198,7 @@ class Client {
         });
         return results;
       })
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => err);
   }
 }
 

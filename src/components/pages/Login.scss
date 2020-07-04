@@ -1,0 +1,19 @@
+@import "../../App.scss";
+
+#login {
+  h2 {
+    padding: 0;
+    color: clr(dark);
+  }
+
+  width: 400px;
+  margin: 1em auto 0;
+
+  @include respond-to(handhelds) {
+    width: 100%;
+  }
+
+  div {
+    width: 100%;
+  }
+}

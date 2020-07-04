@@ -1,0 +1,140 @@
+@import "../../App.scss";
+
+form {
+  width: calc(60% - 2em);
+  margin: 2em auto 0;
+  background-color: clr(light);
+  padding: 1em;
+  border-radius: 5px;
+
+  @include respond-to(handhelds) {
+    width: calc(100% - 2em);
+  }
+
+  h2 {
+    padding: 0;
+    color: clr(dark);
+  }
+
+  div {
+    width: 100%;
+  }
+
+  #program-label,
+  #image-label {
+    width: 100%;
+    margin-top: 1em;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 1px solid clr(lightdark);
+    overflow: hidden;
+    cursor: pointer;
+
+    p {
+      display: block;
+      width: fit-content;
+      margin: 1em auto;
+      color: clr(lightdark);
+    }
+  }
+
+  #program-label:hover,
+  #image-label:hover {
+    border: 1px solid clr(dark);
+
+    #image-upload-background {
+      #image-upload-text {
+        filter: brightness(0%);
+        mix-blend-mode: normal;
+      }
+    }
+
+    p {
+      color: clr(dark);
+    }
+  }
+
+  #image-upload-background {
+    width: 102%;
+    margin: 0 -1%;
+    padding: 100px 0;
+    text-align: center;
+    cursor: pointer;
+
+    #image-upload-text {
+      color: clr(dark);
+      width: fit-content;
+      margin: 0 auto;
+      mix-blend-mode: difference;
+      filter: brightness(150%);
+
+      i {
+        font-size: 40px;
+      }
+    }
+  }
+
+  .ql-toolbar.ql-snow {
+    width: 100%;
+    margin: 0;
+    color: clr(dark);
+    border: none;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    font-family: "Noto Sans", sans-serif;
+    background-color: clr(light);
+    border: 1px solid clr(lightdark);
+  }
+
+  .ql-editor {
+    ol,
+    ul {
+      max-width: 95%;
+      margin: 0;
+
+      li {
+        white-space: pre-line;
+        height: fit-content;
+        width: fit-content;
+        max-width: 95%;
+      }
+    }
+  }
+
+  #text-editor {
+    height: 400px;
+    width: 100%;
+    margin-bottom: 1em;
+    color: clr(dark);
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    border: none;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border: 1px solid clr(lightdark);
+    border-top: none;
+    -webkit-appearance: none;
+
+    @include respond-to(handhelds) {
+      height: 300px;
+      margin-bottom: 0;
+    }
+  }
+
+  .grid-2 {
+    display: flex;
+    justify-content: space-around;
+
+    button {
+      i {
+        padding-right: 3px;
+      }
+    }
+  }
+}
+
+.offscreen {
+  position: fixed;
+  top: -999px;
+  left: -999px;
+}
