@@ -7,19 +7,11 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
-        "source": "/contact",
+        "source": "/upload",
         "destination": "/index.html"
       },
       {
-        "source": "/gallery",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/terms",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/privacy",
+        "source": "/project/:id",
         "destination": "/index.html"
       }
     ],
