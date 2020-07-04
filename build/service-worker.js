@@ -1,70 +1,53 @@
-const CACHE = "static",
-  FILES = [
-    {
-      revision: "b337d6c73de214814f1b3cf252056b11",
-      url: "/index.html"
-    },
-    {
-      revision: "d94bfb3ad0de13fa96e0",
-      url: "/static/css/main.e176fed1.chunk.css"
-    },
-    {
-      revision: "83118b875fbf40f47561",
-      url: "/static/js/2.b604a456.chunk.js"
-    },
-    {
-      revision: "d94bfb3ad0de13fa96e0",
-      url: "/static/js/main.00da3bb5.chunk.js"
-    },
-    {
-      revision: "42ac5946195a7306e2a5",
-      url: "/static/js/runtime~main.a8a9905a.js"
-    },
-    {
-      revision: "daea9fd1106daea557d8652b4cf941a6",
-      url: "/static/media/background-highres.daea9fd1.jpg"
-    },
-    {
-      revision: "38c01981b35fa1e8a8c84c989b93cf9f",
-      url: "/static/media/bytewave-text.38c01981.svg"
-    },
-    {
-      revision: "65622234b1f25f488817b33610f305d8",
-      url: "/static/media/name.65622234.svg"
-    },
-    {
-      revision: "68509396d95d2ca3e46770ab0ef29428",
-      url: "/static/media/s-ku.68509396.png"
-    }
-  ];
+/* eslint-disable */
+const CACHE = "static";
+
+let FILES = ["/"];
+
+if ("function" === typeof importScripts) {
+  importScripts('/precache-manifest.67421b320af3f00a50c36184403aef50.js');
+  FILES = FILES.concat(self.__precacheManifest || []);
+}
 
 self.addEventListener("install", function(evt) {
-  evt.waitUntil(precache());
+  evt.waitUntil(
+    caches
+      .open(CACHE)
+      .then(function(cache) {
+        cache.addAll(FILES).catch(function() {
+          console.error("Manifest not cached: precache files not added.");
+        });
+      })
+      .catch(function() {
+        console.error("Manifest not cached.");
+      })
+  );
 });
 
 self.addEventListener("fetch", function(evt) {
-  evt.respondWith(fromCache(evt.request));
-  evt.waitUntil(update(evt.request));
+  // Let the browser do its default thing
+  // for non-GET requests.
+  if (evt.request.method != "GET") return;
+
+  // Prevent the default, and handle the request ourselves.
+  evt.respondWith(
+    (async function() {
+      // Try to get the response from a cache
+      const openCache = await caches.open(CACHE).catch(function() {
+        console.error("Failed to open cache on fetch.");
+      });
+      const cachedResponse = await openCache.match(evt.request);
+
+      if (cachedResponse) {
+        // If we found a match in the cache, return it, but also
+        // update the entry in the cache in the background.
+        evt.waitUntil(openCache.add(evt.request));
+        return cachedResponse;
+      }
+
+      // If we didn't find a match in the cache, use the network.
+      return fetch(evt.request).catch(function() {
+        console.error("Fetch failure:", evt.request);
+      });
+    })()
+  );
 });
-
-function precache() {
-  return caches.open(CACHE).then(function(cache) {
-    return cache.addAll(FILES);
-  });
-}
-
-function fromCache(request) {
-  return caches.open(CACHE).then(function(cache) {
-    return cache.match(request).then(function(matching) {
-      return matching || Promise.reject("no-match");
-    });
-  });
-}
-
-function update(request) {
-  return caches.open(CACHE).then(function(cache) {
-    return fetch(request).then(function(response) {
-      return cache.put(request, response);
-    });
-  });
-}
