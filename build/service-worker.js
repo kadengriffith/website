@@ -4,7 +4,7 @@ const CACHE = "static";
 let FILES = ["/"];
 
 if ("function" === typeof importScripts) {
-  importScripts('/precache-manifest.67421b320af3f00a50c36184403aef50.js');
+  importScripts('/precache-manifest.30868c162a3e0227e0bb39b57d4ca527.js');
   FILES = FILES.concat(self.__precacheManifest || []);
 }
 

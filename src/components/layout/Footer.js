@@ -67,7 +67,7 @@ function Footer() {
           <div id="bytewave" />
         </a>
         <div id="copyright">
-          © 2019, Kaden Griffith{" "}
+          © 2021, Kaden Griffith{" "}
           <Link id="login" alt="Login" aria-label="Login" to="/login">
             <i className="fal fa-user-lock"></i>
           </Link>
