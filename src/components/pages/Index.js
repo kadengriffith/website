@@ -10,17 +10,17 @@ export class Index extends Component {
   __isMounted = false;
 
   state = {
-    projects: []
+    projects: [],
   };
 
   componentDidMount() {
     this.__isMounted = true;
     window.scrollTo(0, 0);
 
-    Client.getCollection("projects", "desc").then(projects => {
+    Client.getCollection("projects", "desc").then((projects) => {
       if (this.__isMounted) {
         this.setState({
-          projects
+          projects,
         });
       }
     });
@@ -78,11 +78,9 @@ export class Index extends Component {
           </h4>
           <div id="about">
             <p>
-              This is home to some of my favorite projects. A few of the
-              examples in my collection are modeled after early arcade and
-              classic video games; however, mostly projects I work on in my free
-              time will be located here. I am currently a computer science
-              student at UCCS in Colorado Springs. I also make music for a nice
+              This is home to my public software projects. Most projects I work
+              on in my free time will be located here. I am a software developer
+              both professionally and personally. I also make music for a nice
               break from studying. If you enjoy the content please use any code
               shown for your own personal creations! Take a look at my social
               accounts or shoot me an email to see what I'm up to today.
