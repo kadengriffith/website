@@ -1,3 +1,50 @@
+<script setup>
+useHead({
+  title: "A Portfolio of Kaden Griffith's Work",
+  meta: [
+    {
+      name: "description",
+      content:
+        "A portfolio of Kaden Griffith's work. I'm a software engineer and entrepreneur.",
+    },
+    { charset: "utf-8" },
+    {
+      name: "viewport",
+      content:
+        "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0",
+    },
+  ],
+  link: [
+    {
+      rel: "manifest",
+      href: "/site.webmanifest",
+    },
+    {
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+      href: "/apple-touch-icon.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      href: "/android-chrome-192x192.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      href: "/favicon-16x16.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      href: "/favicon-32x32.png",
+    },
+  ],
+});
+</script>
+
 <template>
   <UBlogPosts class="my-10 max-w-screen-lg mx-auto">
     <UBlogPost
