@@ -14,6 +14,6 @@ FROM node:20 AS runner
 
 WORKDIR /workspace
 
-COPY --from=builder /opt/app/.output /workspace
+COPY --from=builder /workspace/.output /workspace
 
 CMD ["node", "./server/index.mjs"]
