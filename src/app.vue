@@ -286,7 +286,7 @@ function handleCardMouseLeave(idx) {
     <UContainer
       class="flex flex-col gap-10 mt-40 mb-16 max-w-screen-lg mx-auto"
     >
-      <PackedCircleNameSvg class="absolute -top-50 -left-1.5" />
+      <PackedCircleNameSvg class="absolute -top-50 -left-1" />
       <UBlogPosts class="max-w-screen-lg mx-auto">
         <div
           v-for="(link, index) in links"
