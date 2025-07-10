@@ -135,7 +135,8 @@ const links = [
     variant: "subtle",
     title: "My LinkedIn Profile",
     description: "I don't use it but it's here.",
-    image: "https://brand.linkedin.com/linkedin-logo",
+    image:
+      "https://content.linkedin.com/content/dam/me/business/en-us/amp/xbu/linkedin-revised-brand-guidelines/linkedin-logo/fg/brandg-linkedinlogo-logo-background-dsk-v03.png/jcr:content/renditions/brandg-linkedinlogo-logo-background-dsk-v03-2x.png",
     to: "https://www.linkedin.com/in/kadengriffith/",
     target: "_blank",
     authors: [authorKaden],
@@ -257,16 +258,46 @@ const links = [
     authors: [authorBytewave],
   },
 ];
+const cardTransforms = reactive({});
+
+function handleCardMouseMove(e, idx) {
+  const card = e.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const rotateX = ((y - centerY) / centerY) * 8;
+  const rotateY = ((x - centerX) / centerX) * -8;
+
+  cardTransforms[
+    idx
+  ] = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+}
+
+function handleCardMouseLeave(idx) {
+  delete cardTransforms[idx];
+}
 </script>
 
 <template>
   <UApp>
+    <CursorSpotlight />
     <UContainer
       class="flex flex-col gap-10 mt-40 mb-16 max-w-screen-lg mx-auto"
     >
       <PackedCircleNameSvg class="absolute -top-50 -left-1.5" />
       <UBlogPosts class="max-w-screen-lg mx-auto">
-        <UBlogPost v-for="link in links" :key="link.title" v-bind="link" />
+        <div
+          v-for="(link, index) in links"
+          :key="index"
+          class="z-30 transition-transform duration-50 ease-[cubic-bezier(0.4,0.2,0.2,1)] will-change-transform will-change-shadow shadow-md rounded-2xl hover:shadow-2xl"
+          :style="{ transform: cardTransforms[index] }"
+          @mousemove="handleCardMouseMove($event, index)"
+          @mouseleave="handleCardMouseLeave(index)"
+        >
+          <UBlogPost v-bind="link" class="h-full w-full" />
+        </div>
       </UBlogPosts>
       <USeparator>
         <UColorModeButton />
