@@ -8,5 +8,5 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true },
   },
-  modules: ['@nuxt/fonts', '@nuxt/image', '@vueuse/nuxt', '@nuxt/ui-pro']
+  modules: ['@vueuse/nuxt', '@nuxt/ui-pro']
 })
