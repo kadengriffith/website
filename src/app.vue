@@ -223,7 +223,7 @@ const links = [
     title: "Just in Time Tile & Design",
     description:
       "Justin Time Tile & Design. Precision Tiling. Just in Time, Every Time. | Justin Time Tile & Design",
-    image: "https://justintimetile.com/logo-grey.png",
+    image: "https://justintimetile.com/social-card.jpg",
     to: "https://justintimetile.com",
     target: "_blank",
     authors: [authorBytewave, authorKaden],
