@@ -3,14 +3,6 @@ import svgContent from "./assets/name.svg?raw";
 import * as d3 from "d3";
 
 const props = defineProps({
-  width: {
-    type: Number,
-    default: 600,
-  },
-  height: {
-    type: Number,
-    default: 600,
-  },
   circleColors: {
     type: Array,
     default: () => [
@@ -24,106 +16,28 @@ const props = defineProps({
     ],
   },
 });
-const canvasRef = ref(null);
+const canvasRef = useTemplateRef("canvasRef");
+const parentElement = computed(() => canvasRef.value?.parentElement);
+const { width: size } = useElementSize(parentElement);
+const { pixelRatio } = useDevicePixelRatio();
+const scaledSize = computed(() => size.value * pixelRatio.value);
 const r = 1;
 const cursorForceRadius = 80;
 const cursorForceStrength = 4;
 const shapeStrengthValue = 1;
-const { pixelRatio } = useDevicePixelRatio();
+const debouncedSetup = useDebounceFn(() => {
+  setupSVGPath();
+  generateShapePoints();
+  initializeCircles();
+  createSimulation();
+}, 50);
 let simulation = null;
 let circles = [];
 let pathBounds = null;
 let pathContext = null;
 let shapePoints = [];
-let mouseX = props.width / 2;
-let mouseY = props.height / 2;
-
-function setupSVGPath() {
-  const parser = new DOMParser();
-  const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
-  const inputSvg = svgDoc.querySelector("svg");
-
-  if (!inputSvg) {
-    return;
-  }
-
-  const viewBox = inputSvg.getAttribute("viewBox");
-
-  let sourceWidth, sourceHeight;
-
-  if (viewBox) {
-    const [, , w, h] = viewBox.split(" ").map(Number);
-    sourceWidth = w;
-    sourceHeight = h;
-  } else {
-    sourceWidth = parseFloat(inputSvg.getAttribute("width")) || 100;
-    sourceHeight = parseFloat(inputSvg.getAttribute("height")) || 100;
-  }
-
-  const scaleX = (props.width * 0.5) / sourceWidth;
-  const scaleY = (props.height * 0.5) / sourceHeight;
-  const scale = Math.min(scaleX, scaleY);
-  const offsetX = (props.width - sourceWidth * scale) / 2;
-  const offsetY = (props.height - sourceHeight * scale) / 2;
-  const paths = inputSvg.querySelectorAll(
-    "path, polygon, circle, rect, ellipse"
-  );
-  const whitePaths = [];
-
-  for (let i = 0; i < paths.length; ++i) {
-    const path = paths[i];
-    const fill = path.getAttribute("fill");
-
-    if (!fill || fill === "white" || fill === "#ffffff" || fill === "#fff") {
-      whitePaths.push(path);
-    }
-  }
-
-  const targetPaths = whitePaths.length > 0 ? whitePaths : Array.from(paths);
-
-  createPathContext(offsetX, offsetY, targetPaths, scale);
-
-  pathBounds = {
-    x: offsetX,
-    y: offsetY,
-    width: sourceWidth * scale,
-    height: sourceHeight * scale,
-    scale,
-    centerX: offsetX + (sourceWidth * scale) / 2,
-    centerY: offsetY + (sourceHeight * scale) / 2,
-    paths: targetPaths.map((p) => ({
-      element: p,
-      data: getPathData(p),
-    })),
-  };
-}
-
-function createPathContext(offsetX, offsetY, paths, scale) {
-  const canvas = document.createElement("canvas");
-
-  canvas.width = props.width * pixelRatio.value;
-  canvas.height = props.height * pixelRatio.value;
-
-  const ctx = canvas.getContext("2d");
-  ctx.setTransform(pixelRatio.value, 0, 0, pixelRatio.value, 0, 0);
-  ctx.fillStyle = "white";
-
-  for (let i = 0; i < paths.length; ++i) {
-    const path = paths[i];
-    const pathData = getPathData(path);
-
-    if (pathData) {
-      const path2D = new Path2D(pathData);
-      ctx.save();
-      ctx.translate(offsetX, offsetY);
-      ctx.scale(scale, scale);
-      ctx.fill(path2D);
-      ctx.restore();
-    }
-  }
-
-  pathContext = ctx;
-}
+let mouseX = 0;
+let mouseY = 0;
 
 function getPathData(element) {
   const tagName = element.tagName.toLowerCase();
@@ -162,6 +76,93 @@ function getPathData(element) {
   }
 }
 
+function createPathContext(offsetX, offsetY, paths, scale) {
+  const canvas = document.createElement("canvas");
+
+  canvas.width = scaledSize.value;
+  canvas.height = scaledSize.value;
+
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(pixelRatio.value, 0, 0, pixelRatio.value, 0, 0);
+  ctx.fillStyle = "white";
+
+  for (let i = 0; i < paths.length; ++i) {
+    const path = paths[i];
+    const pathData = getPathData(path);
+
+    if (pathData) {
+      const path2D = new Path2D(pathData);
+      ctx.save();
+      ctx.translate(offsetX, offsetY);
+      ctx.scale(scale, scale);
+      ctx.fill(path2D);
+      ctx.restore();
+    }
+  }
+
+  pathContext = ctx;
+}
+
+function setupSVGPath() {
+  const parser = new DOMParser();
+  const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
+  const inputSvg = svgDoc.querySelector("svg");
+
+  if (!inputSvg) {
+    return;
+  }
+
+  const viewBox = inputSvg.getAttribute("viewBox");
+
+  let sourceWidth, sourceHeight;
+
+  if (viewBox) {
+    const [, , w, h] = viewBox.split(" ").map(Number);
+    sourceWidth = w;
+    sourceHeight = h;
+  } else {
+    sourceWidth = parseFloat(inputSvg.getAttribute("width")) || 100;
+    sourceHeight = parseFloat(inputSvg.getAttribute("height")) || 100;
+  }
+
+  const scaleX = (size.value * 0.5) / sourceWidth;
+  const scaleY = (size.value * 0.5) / sourceHeight;
+  const scale = Math.min(scaleX, scaleY);
+  const offsetX = (size.value - sourceWidth * scale) / 2;
+  const offsetY = (size.value - sourceHeight * scale) / 2;
+  const paths = inputSvg.querySelectorAll(
+    "path, polygon, circle, rect, ellipse"
+  );
+  const whitePaths = [];
+
+  for (let i = 0; i < paths.length; ++i) {
+    const path = paths[i];
+    const fill = path.getAttribute("fill");
+
+    if (!fill || fill === "white" || fill === "#ffffff" || fill === "#fff") {
+      whitePaths.push(path);
+    }
+  }
+
+  const targetPaths = whitePaths.length > 0 ? whitePaths : Array.from(paths);
+
+  createPathContext(offsetX, offsetY, targetPaths, scale);
+
+  pathBounds = {
+    x: offsetX,
+    y: offsetY,
+    width: sourceWidth * scale,
+    height: sourceHeight * scale,
+    scale,
+    centerX: offsetX + (sourceWidth * scale) / 2,
+    centerY: offsetY + (sourceHeight * scale) / 2,
+    paths: targetPaths.map((p) => ({
+      element: p,
+      data: getPathData(p),
+    })),
+  };
+}
+
 function generateShapePoints() {
   if (!pathContext) {
     return;
@@ -192,7 +193,7 @@ function isPointInPath(x, y) {
     return false;
   }
 
-  if (x >= 0 && x < props.width && y >= 0 && y < props.height) {
+  if (x >= 0 && x < size.value && y >= 0 && y < size.value) {
     const imageData = pathContext.getImageData(
       Math.floor(x * pixelRatio.value),
       Math.floor(y * pixelRatio.value),
@@ -223,27 +224,6 @@ function initializeCircles() {
       targetPoint: { x, y },
     });
   }
-}
-
-function createSimulation() {
-  if (simulation) {
-    simulation.stop();
-  }
-
-  simulation = d3
-    .forceSimulation(circles)
-    .force(
-      "collision",
-      d3
-        .forceCollide()
-        .radius(r + 0.1)
-        .strength(1)
-    )
-    .force("shape", shapeForce())
-    .alphaDecay(0)
-    .velocityDecay(0.05);
-
-  simulation.on("tick", drawCanvas);
 }
 
 function shapeForce() {
@@ -298,11 +278,63 @@ function cursorForce() {
   };
 }
 
+function drawCanvas() {
+  const canvas = canvasRef.value;
+
+  if (!canvas) {
+    return;
+  }
+
+  const ctx = canvas.getContext("2d", { alpha: true });
+
+  ctx.save()
+
+  ctx.setTransform(pixelRatio.value, 0, 0, pixelRatio.value, 0, 0);
+  ctx.clearRect(0, 0, scaledSize.value, scaledSize.value);
+
+  for (let i = 0; i < circles.length; ++i) {
+    const c = circles[i];
+
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.radius, 0, 2 * Math.PI);
+    ctx.fillStyle = c.color;
+    ctx.globalAlpha = 0.9;
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore()
+}
+
+function createSimulation() {
+  if (simulation) {
+    simulation.stop();
+  }
+
+  simulation = d3
+    .forceSimulation(circles)
+    .force(
+      "collision",
+      d3
+        .forceCollide()
+        .radius(r + 0.1)
+        .strength(1)
+    )
+    .force("shape", shapeForce())
+    .alphaDecay(0)
+    .velocityDecay(0.05);
+
+  simulation.on("tick", drawCanvas);
+
+  drawCanvas();
+}
+
 function onPointermove(event) {
   const rect = canvasRef.value.getBoundingClientRect();
 
-  mouseX = (event.clientX - rect.left) * (props.width / rect.width);
-  mouseY = (event.clientY - rect.top) * (props.height / rect.height);
+  mouseX = (event.clientX - rect.left) * (size.value / rect.width);
+  mouseY = (event.clientY - rect.top) * (size.value / rect.height);
 
   if (simulation && !simulation.force("cursor")) {
     simulation.force("cursor", cursorForce());
@@ -320,36 +352,7 @@ function onPointerleave() {
   }
 }
 
-function drawCanvas() {
-  const canvas = canvasRef.value;
-
-  if (!canvas) {
-    return;
-  }
-
-  const ctx = canvas.getContext("2d", { alpha: true });
-  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-  ctx.clearRect(0, 0, props.width, props.height);
-
-  for (let i = 0; i < circles.length; ++i) {
-    const c = circles[i];
-
-    ctx.beginPath();
-    ctx.arc(c.x, c.y, c.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = c.color;
-    ctx.globalAlpha = 0.9;
-    ctx.fill();
-
-    ctx.globalAlpha = 1;
-  }
-}
-
-watch(canvasRef, () => {
-  setupSVGPath();
-  generateShapePoints();
-  initializeCircles();
-  createSimulation();
-});
+watch([size, pixelRatio, canvasRef], debouncedSetup);
 
 onBeforeUnmount(() => {
   if (simulation) {
@@ -359,12 +362,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <canvas
-    ref="canvasRef"
-    :width="width * pixelRatio"
-    :height="height * pixelRatio"
-    :style="{ width: `${width}px`, height: `${height}px` }"
-    @pointermove="onPointermove"
-    @pointerleave="onPointerleave"
-  />
+  <div class="relative w-full h-32">
+    <canvas
+      ref="canvasRef"
+      :width="scaledSize"
+      :height="scaledSize"
+      :style="{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: `${size}px`,
+        height: `${size}px`,
+      }"
+      @pointermove="onPointermove"
+      @pointerleave="onPointerleave"
+    />
+  </div>
 </template>

@@ -283,11 +283,9 @@ function handleCardMouseLeave(idx) {
 <template>
   <UApp>
     <CursorSpotlight />
-    <UContainer
-      class="flex flex-col gap-10 mt-40 mb-16 max-w-screen-lg mx-auto"
-    >
-      <PackedCircleNameSvg class="absolute -top-50 -left-1" />
-      <UBlogPosts class="max-w-screen-lg mx-auto">
+    <UContainer class="flex flex-col mb-16 max-w-screen-lg mx-auto">
+      <PackedCircleNameSvg />
+      <UBlogPosts class="max-w-screen-lg mx-auto mb-8">
         <div
           v-for="(link, index) in links"
           :key="index"
