@@ -218,7 +218,7 @@ function initializeCircles() {
       x: x + (Math.random() - 0.5) * 8,
       y: y + (Math.random() - 0.5) * 8,
       radius: 1,
-      color: props.circleColors[i % props.circleColors.length],
+      color: props.circleColors[Math.floor(Math.random() * props.circleColors.length)],
       vx: (Math.random() - 0.5) * 2,
       vy: (Math.random() - 0.5) * 2,
       targetPoint: { x, y },
